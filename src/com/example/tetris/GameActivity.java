@@ -1,13 +1,18 @@
 package com.example.tetris;
 
 import android.app.Activity;
+import android.content.ContentValues;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.GestureDetector;
@@ -18,23 +23,24 @@ public class GameActivity extends Activity implements View.OnTouchListener, View
     Game game;
     final Activity act =this;
    // SurfaceView gameView;
-    Button buttonRight, buttonLeft, buttonRotate, buttonDown,  buttonPause, buttonGameOver, buttonNewGame;
+    ImageButton buttonRight, buttonLeft, buttonRotate, buttonDown;
+    Button buttonPause, buttonGameOver, buttonExit;
     //Thread gameThread;
     Float currentX, currentY;
     Float previosX, previosY;
     Float motionX, motionY;
-    final static int RIGHT_MOTION = 1;
-    final static int LEFT_MOTION  = -1;
-    final static int UP_MOTION    = 2;
-    final static int DOWN_MOTION  = -2;
-    final static int ROTATE_MOTION = 3;
-    final static int NOTHING = 0;
+    private final static int RIGHT_MOTION = 1;
+    private final static int LEFT_MOTION  = -1;
+    private final static int UP_MOTION    = 2;
+    private final static int DOWN_MOTION  = -2;
+    private final static int ROTATE_MOTION = 3;
+    private final static int NOTHING = 0;
     int widht;
     int height;
     int typeOfMotion = 0;
     GestureDetector mDetector;
-
-    private static final String TAG = "myLogs";
+    private DBUser dbUser;
+    
 
 
 
@@ -48,13 +54,13 @@ public class GameActivity extends Activity implements View.OnTouchListener, View
         surface.addView(game);
         surface.setOnTouchListener(this);
 
-        buttonRight = (Button)findViewById(R.id.button_right);
-        buttonLeft = (Button)findViewById(R.id.button_left);
-        buttonRotate = (Button)findViewById(R.id.button_rotate);
-        buttonDown = (Button)findViewById(R.id.button_down);
+        buttonRight = (ImageButton)findViewById(R.id.button_right);
+        buttonLeft = (ImageButton)findViewById(R.id.button_left);
+        buttonRotate = (ImageButton)findViewById(R.id.button_rotate);
+        buttonDown = (ImageButton)findViewById(R.id.button_down);
         buttonPause = (Button)findViewById(R.id.button_pause);
         buttonGameOver = (Button)findViewById(R.id.button_game_over);
-        buttonNewGame = (Button)findViewById(R.id.button_new_game);
+        buttonExit = (Button)findViewById(R.id.button_exit);
         buttonRight.setOnClickListener(this);
         buttonLeft.setOnClickListener(this);
         buttonRotate.setOnClickListener(this);
@@ -63,13 +69,16 @@ public class GameActivity extends Activity implements View.OnTouchListener, View
         buttonGameOver.setOnClickListener(this);
         buttonGameOver.setClickable(false);
         buttonGameOver.setVisibility(View.INVISIBLE);
-        buttonNewGame.setOnClickListener(this);
+        buttonExit.setOnClickListener(this);
         mDetector = new GestureDetector(this,this);
+        dbUser = new DBUser(this);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
+
     }
 
     @Override
@@ -91,19 +100,28 @@ public class GameActivity extends Activity implements View.OnTouchListener, View
             case R.id.button_pause:
                 game.setNotPause(!game.getNotPause());
                 break;
-            case R.id.button_new_game:
-                game.newGame();
-
+            case R.id.button_exit:
+                this.finish();
                 break;
             case R.id.button_game_over:
-                buttonGameOver.setClickable(false);
-                buttonGameOver.setVisibility(View.INVISIBLE);
-                game.newGame();
+                setNewGame();
                 break;
         }
+
     }
-
-
+private  void saveScore(){}
+ private void setNewGame(){
+     SQLiteDatabase db = dbUser.getWritableDatabase();
+     ContentValues cv = new ContentValues();
+     String name = "Sinvjf";
+     buttonGameOver.setClickable(false);
+     buttonGameOver.setVisibility(View.INVISIBLE);
+     cv.put("name", name);
+     cv.put("score", game.getScore());
+     db.insert("scores", null, cv);
+     dbUser.close();
+     game.newGame();
+ }
 
 
     @Override
@@ -119,27 +137,22 @@ public class GameActivity extends Activity implements View.OnTouchListener, View
                 break;
             case MotionEvent.ACTION_MOVE: // движение
 
-
-
-
                 break;
             case MotionEvent.ACTION_UP: // отпускание
-        //        motionX = 0.0f;
-        //        motionY = 0.0f;
                 motionX = currentX - previosX;
                 motionY = currentY - previosY;
                 if (motionY > height/5){
                     typeOfMotion = DOWN_MOTION;}
                 else if (motionX < -widht/5) {
-                    Log.d(TAG, "left "+motionX+ " widght="+widht );
+                    Log.d(Const.LOG_TAG, "left "+motionX+ " widght="+widht );
                     typeOfMotion = LEFT_MOTION;
                 }
                 else if (motionX > widht/5) {
-                    Log.d(TAG, "right "+motionX+ " widght="+widht);
+                    Log.d(Const.LOG_TAG, "right "+motionX+ " widght="+widht);
                     typeOfMotion = RIGHT_MOTION;
                 }
                 else {
-                    Log.d(TAG, "Nothing! "+motionX+ " widght="+widht);
+                    Log.d(Const.LOG_TAG, "Nothing! "+motionX+ " widght="+widht);
                     typeOfMotion = NOTHING;
                 }
                 switch (typeOfMotion) {
@@ -200,7 +213,7 @@ public class GameActivity extends Activity implements View.OnTouchListener, View
     @Override
     public boolean onSingleTapUp(MotionEvent event) {
         game.moveFigure(game.getFCurrent(), 0, 0, 1);
-        Log.d(TAG, "single! ");
+        Log.d(Const.LOG_TAG, "single! ");
         return true;
     }
 

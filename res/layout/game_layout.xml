@@ -51,36 +51,36 @@
                     android:layout_gravity="right|top"
                     android:orientation="horizontal">
 
-                <Button
-                    android:text="left"
+                <ImageButton
+                    android:src="@drawable/left"
                     android:id="@+id/button_left"
                     android:layout_gravity="right|top"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
-                </Button>
-                <Button
-                    android:text="right"
+                </ImageButton>
+                <ImageButton
+                    android:src="@drawable/right"
                     android:id="@+id/button_right"
                     android:layout_gravity="right|top"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
-                </Button>
+                </ImageButton>
             </LinearLayout>
             </FrameLayout>
-            <Button
-                    android:text="rotate"
+            <ImageButton
+                    android:src="@drawable/rotate"
                     android:id="@+id/button_rotate"
                     android:layout_gravity="right|top"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
-            </Button>
-            <Button
-                    android:text="down"
+            </ImageButton>
+            <ImageButton
+                    android:src="@drawable/down"
                     android:id="@+id/button_down"
                     android:layout_gravity="right|top"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
-            </Button>
+            </ImageButton>
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -95,18 +95,14 @@
                     android:layout_height="wrap_content">
             </Button>
             <Button
-                    android:text="new game"
-                    android:id="@+id/button_new_game"
+                    android:text="exit"
+                    android:id="@+id/button_exit"
                     android:layout_gravity="right|bottom"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
             </Button>
-            <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right|top"
-                    android:layout_weight="1"
-                    android:orientation="horizontal"/>
+
+
         </LinearLayout>
 
     </FrameLayout>
