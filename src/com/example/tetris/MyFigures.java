@@ -65,6 +65,7 @@ public class MyFigures {
         currentMode =(shift_mode+currentMode)%4;
         Log.d("MY_MASK",currentMode+"" );
     }
+
     /**
      * create new figure
      */

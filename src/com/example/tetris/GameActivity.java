@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -20,6 +18,7 @@ import android.view.GestureDetector;
  * Created by Sinjvf on 09.03.2015.
  */
 public class GameActivity extends Activity implements View.OnTouchListener, View.OnClickListener, ListenerToMain, GestureDetector.OnGestureListener{
+
     Game game;
     final Activity act =this;
    // SurfaceView gameView;
@@ -39,12 +38,12 @@ public class GameActivity extends Activity implements View.OnTouchListener, View
     int height;
     int typeOfMotion = 0;
     GestureDetector mDetector;
-    private DBUser dbUser;
     
 
 
 
     public void onCreate(Bundle savedInstanceState) {
+        Log.d(Const.LOG_TAG, "create " + this.toString());
         game = new Game(this);
         game.setListenerToMain(this);
         super.onCreate(savedInstanceState);
@@ -71,14 +70,38 @@ public class GameActivity extends Activity implements View.OnTouchListener, View
         buttonGameOver.setVisibility(View.INVISIBLE);
         buttonExit.setOnClickListener(this);
         mDetector = new GestureDetector(this,this);
-        dbUser = new DBUser(this);
+
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d(Const.LOG_TAG, "START");
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        game.setNotPause(true);
+        Log.d(Const.LOG_TAG, "RESUME");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        game.setNotPause(false);
+        Log.d(Const.LOG_TAG, "PAUSE");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(Const.LOG_TAG, "STOP");
     }
 
     @Override
@@ -101,26 +124,25 @@ public class GameActivity extends Activity implements View.OnTouchListener, View
                 game.setNotPause(!game.getNotPause());
                 break;
             case R.id.button_exit:
+                game.stop();
+                checkResuts();
                 this.finish();
+                //this.onDestroy();
                 break;
             case R.id.button_game_over:
-                setNewGame();
+            //    setNewGame();
                 break;
         }
 
     }
-private  void saveScore(){}
- private void setNewGame(){
-     SQLiteDatabase db = dbUser.getWritableDatabase();
-     ContentValues cv = new ContentValues();
-     String name = "Sinvjf";
-     buttonGameOver.setClickable(false);
-     buttonGameOver.setVisibility(View.INVISIBLE);
-     cv.put("name", name);
-     cv.put("score", game.getScore());
-     db.insert("scores", null, cv);
-     dbUser.close();
-     game.newGame();
+ private void checkResuts(){
+     DBUser db = new DBUser(this);
+     if (db.isPrintedResult(game.getScore())){
+
+         Intent intent = new Intent(this, SaveResultsActivity.class);
+         intent.putExtra("score", game.getScore());
+         startActivity(intent);
+     }
  }
 
 
@@ -136,23 +158,20 @@ private  void saveScore(){}
                 previosY = currentY;
                 break;
             case MotionEvent.ACTION_MOVE: // движение
-
-                break;
-            case MotionEvent.ACTION_UP: // отпускание
                 motionX = currentX - previosX;
                 motionY = currentY - previosY;
                 if (motionY > height/5){
-                    typeOfMotion = DOWN_MOTION;}
+                    typeOfMotion = DOWN_MOTION;
+                    previosY = currentY;}
                 else if (motionX < -widht/5) {
-                    Log.d(Const.LOG_TAG, "left "+motionX+ " widght="+widht );
                     typeOfMotion = LEFT_MOTION;
+                    previosX=currentX;
                 }
                 else if (motionX > widht/5) {
-                    Log.d(Const.LOG_TAG, "right "+motionX+ " widght="+widht);
                     typeOfMotion = RIGHT_MOTION;
+                    previosX=currentX;
                 }
                 else {
-                    Log.d(Const.LOG_TAG, "Nothing! "+motionX+ " widght="+widht);
                     typeOfMotion = NOTHING;
                 }
                 switch (typeOfMotion) {
@@ -167,6 +186,9 @@ private  void saveScore(){}
                         break;
                 }
                 break;
+            case MotionEvent.ACTION_UP: // отпускание
+
+                break;
         }
         mDetector.onTouchEvent(event);
         return true;
@@ -174,11 +196,12 @@ private  void saveScore(){}
 
     @Override
     public void onListenToMain(){
-        buttonGameOver.setClickable(true);
+        Log.d(Const.LOG_TAG, this.toString());
         buttonGameOver.getHandler().post(
                 new Runnable() {
                     public void run() {
                         buttonGameOver.setVisibility(View.VISIBLE);
+                        buttonGameOver.setClickable(true);
                     }
                  }
         );

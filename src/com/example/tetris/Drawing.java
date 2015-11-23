@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.util.Log;
 
 import java.util.HashSet;
 
@@ -13,12 +14,15 @@ import java.util.HashSet;
 public class Drawing {
     int iW=0;
     int height, width;
+    int shiftx=0,  shifty=0;
     Canvas canvas;
     GameScreen screen;
     public void setHW( int height, int width){
         this.height = height;
         this.width = width;
-        iW = height / Const.NH;
+        iW = (width*3/4)/Const.NW; //height / Const.NH;
+        this.shiftx = Const.SHIFTX;
+        this.shifty = (height-iW*Const.NH)/2;
     }
 
     public void setCanvas(Canvas canvas) {
@@ -37,7 +41,8 @@ public class Drawing {
         p.setStyle(Paint.Style.FILL);
         HashSet<Point> hashSet = fig.getFieldsWithPosition();
         for (Point k : hashSet) {
-            drawRect(p, k.x, k.y);
+            if (k.y>=0)
+                drawRect(p, k.x, k.y);
         }
     }
 
@@ -54,20 +59,19 @@ public class Drawing {
      * draw rectangle on canvas with p in (i, j) point
      */
     private void drawRect(Paint p, int i, int j) {
-        canvas.drawRect(i * iW + Const.TRACE,
-                        j * iW + Const.TRACE,
-                        (i + 1) * iW - Const.TRACE,
-                        (j + 1) * iW - Const.TRACE,
+        canvas.drawRect(shiftx+i * iW + Const.TRACE,
+                        shifty+j * iW + Const.TRACE,
+                        shiftx+(i + 1) * iW - Const.TRACE,
+                        shifty+(j + 1) * iW - Const.TRACE,
                         p);
     }
     private void drawRectForNextFugure(Paint p, int i, int j) {
-        Integer iiw, iiW;
+        Integer iiw;
         iiw = iW/2;
-        iiW = iW/2;
-        canvas.drawRect(i * iiw + Const.TRACE + iW*Const.NW,
-                        j * iiW + Const.TRACE +iW*(Const.NH/2-3/2),
-                        (i + 1) * iiw - Const.TRACE+iW*Const.NW,
-                        (j + 1) * iiW - Const.TRACE+iW*(Const.NH/2-3/2),
+        canvas.drawRect((i-1) * iiw + Const.TRACE+ iW*Const.NW,
+                        (j+1) * iiw + Const.TRACE +iW*(Const.NH/2-3/2),
+                        (i ) * iiw - Const.TRACE+ iW*Const.NW,
+                        (j + 2) * iiw - Const.TRACE+iW*(Const.NH/2-3/2),
                         p);
     }
     /**
@@ -83,7 +87,7 @@ public class Drawing {
             }
         }
     }
-    public void drawGrid(Integer score, Paint p) {
+    public void drawGrid(Integer score, int level, Paint p) {
 
 
         /** fill field by color*/
@@ -91,24 +95,26 @@ public class Drawing {
         p.setStrokeWidth(Const.TRACE*2);
         p.setColor(Color.BLACK);
         for (int i = 0; i <=Const.NW; i++)
-            canvas.drawLine(i * iW,
-                            0,
-                            i * iW,
-                            iW*Const.NH,
+            canvas.drawLine(shiftx+i * iW,
+                            shifty+0,
+                            shiftx+i * iW,
+                            shifty+iW*Const.NH,
                             p);
         for (int i = 0; i <= Const.NH; i++)
-            canvas.drawLine(0,
-                            i * iW,
-                            iW * Const.NW,
-                            i * iW,
+            canvas.drawLine(shiftx+0,
+                            shifty+i * iW,
+                            shiftx+iW * Const.NW,
+                            shifty+ i * iW,
                             p);
 
         p.setColor(Color.BLACK);
         p.setTextAlign(Paint.Align.CENTER);
         p.setTextSize(30);
-        canvas.drawText("score:", (width + iW * Const.NW) / 2, height / 2, p);
-        canvas.drawText(""+score, (width+iW*Const.NW)/2, height/2+2*iW, p);
-        canvas.drawText("next:", (width + iW * Const.NW) / 2, height / 2 - 3*iW, p);
+        canvas.drawText("Next:", (width + iW * Const.NW) / 2, height / 2 - 3*iW, p);
+        canvas.drawText("Level:", (width + iW * Const.NW) / 2, height / 2, p);
+        canvas.drawText(""+level, (width+iW*Const.NW)/2, height/2+iW, p);
+        canvas.drawText("score:", (width + iW * Const.NW) / 2, height/2 + iW*3, p);
+        canvas.drawText(""+score, (width+iW*Const.NW)/2, height/2+iW*4, p);
 
 
 

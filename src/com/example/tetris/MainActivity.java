@@ -11,7 +11,7 @@ import android.widget.Button;
 
 public class MainActivity extends Activity implements View.OnClickListener {
     Button button_new, button_rating, button_exit_app;
-    private DBUser dbUser;
+    private DBHelper dbHelper;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,12 +24,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
         button_new.setOnClickListener(this);
         button_rating.setOnClickListener(this);
         button_exit_app.setOnClickListener(this);
-        dbUser = new DBUser(this);
+        dbHelper = new DBHelper(this);
     }
         @Override
         public void onClick(View v) {
 
-            SQLiteDatabase db = dbUser.getWritableDatabase();
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
             // Меняем текст в TextView (tvOut)
             switch (v.getId()) {
                 case R.id.button_new:
@@ -40,7 +40,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                     this.finish();
                     break;
                 case R.id.button_rating:
-                    Intent intentr = new Intent(this, ResultsActivity.class);
+                    Intent intentr = new Intent(this, PrintResultsActivity.class);
                     startActivity(intentr);
                     Cursor c = null;
                     c = db.query("scores", null, null, null, null, null, "score");
@@ -62,7 +62,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                         Log.d(Const.LOG_TAG, "Cursor is null");
                     break;
         }
-            dbUser.close();
+            dbHelper.close();
     };
 
 
