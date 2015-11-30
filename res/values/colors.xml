@@ -5,5 +5,6 @@
         <color name="black">#ff000000</color>
         <color name="dfox">#ffff8000</color>
         <color name="red">#ffff0000</color>
+       <color name="dblue">#ff000aff</color>
 
 </resources>

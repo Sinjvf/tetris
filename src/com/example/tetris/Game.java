@@ -70,7 +70,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     }
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        Log.d(Const.LOG_TAG, "-----CREATE");
+     //   Log.d(Const.LOG_TAG, "-----CREATE");
         drawThread = new DrawThread(getHolder());
         drawThread.setRunning(true);
         drawThread.start();
@@ -94,17 +94,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         drawThread.setRunning(false);
 
     }
-    public synchronized MyFigures getfCurrent(){
-        return fCurrent;
-    }
 
-    public synchronized MyFigures getfNext(){
-        return fNext;
-    }
-    public synchronized void setFigures(MyFigures fCurrent, MyFigures fNext){
-        this.fCurrent = fCurrent;
-        this.fNext = fNext;
-    }
     public synchronized void setNotPause(boolean pause)
     {
         notPause = pause;
@@ -120,7 +110,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
             return true;
         } else {
             int stay;
-            if ((stay = screen.mustStay(fig)) > 0) {
+            if ((stay = screen.mustStay(fig, shift_i, shift_j)) > 0) {
                 if (stay == 2){
                     gameOver = true;
                     screen.fillFigureSpace(fig);
@@ -177,7 +167,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
             width = getWidth();
             height = getHeight();
             draw.setHW(height, width);
-            Log.d("myLogs", "WIDGH=" + width + "   HEIGHT=" + height);
+          //  Log.d("myLogs", "WIDGH=" + width + "   HEIGHT=" + height);
             while (running) {
                 while (notPause) {
                     now = System.currentTimeMillis();
@@ -186,23 +176,24 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
                     if (elapsedTime > Const.PACE[level]) {
                         if (moveFigure(fCurrent, 0, 1, 0)) {
                             prevTime = now;
-                        } else if (!gameOver) {
-                            fCurrent = fNext;
-                            fNext = MyFigures.newFigure();
-                        }
-
+                        } else
+                            if (!gameOver) {
+                                fCurrent = fNext;
+                                fNext = MyFigures.newFigure();
+                            }
                         try {
                             canvas = surfaceHolder.lockCanvas(null);
                             if (canvas != null){
                                 draw.setCanvas(canvas);
                                 draw.setScreen(screen);
-                                draw.drawGrid(score, level, p);
-                                draw.drawFullScreen(p);
-                                draw.drawFigure(p, fCurrent);
-                                draw.drawNextFigure(p, fNext);
+                                draw.drawGrid(score, level);
+                                draw.drawFullScreen();
+                                draw.drawFigure(fCurrent);
+                                draw.drawNextFigure( fNext);
                                 if (gameOver){
                                     notPause = false;
                                     running = false;
+                                //    draw.drawGameOver();
                                     }
                             }
                             else {running = false;}
@@ -211,7 +202,6 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
                                 surfaceHolder.unlockCanvasAndPost(canvas);
                             }
                         }
-
                     }
                 }
             }

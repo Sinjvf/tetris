@@ -69,7 +69,7 @@ public class PrintResultsActivity extends Activity implements View.OnClickListen
                 Integer i=0;
                 do {
                     i++;
-                    Log.d(Const.LOG_TAG, "READ_DB");
+                  //  Log.d(Const.LOG_TAG, "READ_DB");
                     TableRow record = new TableRow(this);
                     record.setGravity(Gravity.CENTER_HORIZONTAL);
                     TextView place = new TextView(this);

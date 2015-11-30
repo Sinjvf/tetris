@@ -1,19 +1,19 @@
 package com.example.tetris;
 
 import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
-import android.view.View;
+import android.view.*;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.GestureDetector;
+import android.widget.TextView;
+import android.os.Handler;
+
 /**
  * Created by Sinjvf on 09.03.2015.
  */
@@ -38,20 +38,26 @@ public class GameActivity extends Activity implements View.OnTouchListener, View
     int height;
     int typeOfMotion = 0;
     GestureDetector mDetector;
-    
+    LinearLayout surface;
+    DBUser db;
+    TextView textView;
+    Handler handler;
+
 
 
 
     public void onCreate(Bundle savedInstanceState) {
-        Log.d(Const.LOG_TAG, "create " + this.toString());
+     //   Log.d(Const.LOG_TAG, "create " + this.toString());
         game = new Game(this);
         game.setListenerToMain(this);
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.game_layout);
-        LinearLayout surface = (LinearLayout)findViewById(R.id.linearLayout1);
+        surface = (LinearLayout)findViewById(R.id.linearLayout1);
         surface.addView(game);
         surface.setOnTouchListener(this);
+        handler = surface.getHandler();
+
 
         buttonRight = (ImageButton)findViewById(R.id.button_right);
         buttonLeft = (ImageButton)findViewById(R.id.button_left);
@@ -71,6 +77,9 @@ public class GameActivity extends Activity implements View.OnTouchListener, View
         buttonExit.setOnClickListener(this);
         mDetector = new GestureDetector(this,this);
 
+
+        db= new DBUser(this);
+        textView = new TextView(this);
     }
 
     @Override
@@ -81,27 +90,27 @@ public class GameActivity extends Activity implements View.OnTouchListener, View
     @Override
     protected void onStart() {
         super.onStart();
-        Log.d(Const.LOG_TAG, "START");
+    //    Log.d(Const.LOG_TAG, "START");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         game.setNotPause(true);
-        Log.d(Const.LOG_TAG, "RESUME");
+      //  Log.d(Const.LOG_TAG, "RESUME");
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         game.setNotPause(false);
-        Log.d(Const.LOG_TAG, "PAUSE");
+      //  Log.d(Const.LOG_TAG, "PAUSE");
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        Log.d(Const.LOG_TAG, "STOP");
+     //   Log.d(Const.LOG_TAG, "STOP");
     }
 
     @Override
@@ -124,26 +133,17 @@ public class GameActivity extends Activity implements View.OnTouchListener, View
                 game.setNotPause(!game.getNotPause());
                 break;
             case R.id.button_exit:
-                game.stop();
                 checkResuts();
                 this.finish();
-                //this.onDestroy();
                 break;
             case R.id.button_game_over:
-            //    setNewGame();
+                checkResuts();
+                this.finish();
                 break;
         }
 
     }
- private void checkResuts(){
-     DBUser db = new DBUser(this);
-     if (db.isPrintedResult(game.getScore())){
 
-         Intent intent = new Intent(this, SaveResultsActivity.class);
-         intent.putExtra("score", game.getScore());
-         startActivity(intent);
-     }
- }
 
 
     @Override
@@ -194,14 +194,38 @@ public class GameActivity extends Activity implements View.OnTouchListener, View
         return true;
         }
 
+    private void checkResuts(){
+        int score =game.getScore();
+        game.stop();
+        Log.d(Const.LOG_TAG, "Game Over! "+score);
+        if (db.isPrintedResult(score)){
+            Log.d(Const.LOG_TAG, "is Printed res");
+            Intent intent = new Intent(this, SaveResultsActivity.class);
+            intent.putExtra("score", score);
+            startActivity(intent);
+        }
+
+      //  finish();
+    }
+
     @Override
     public void onListenToMain(){
-        Log.d(Const.LOG_TAG, this.toString());
-        buttonGameOver.getHandler().post(
+        Log.d(Const.LOG_TAG, "Show game over");
+   //     checkResuts();
+      //  finish();
+
+        surface.getHandler().post(
                 new Runnable() {
                     public void run() {
-                        buttonGameOver.setVisibility(View.VISIBLE);
+
                         buttonGameOver.setClickable(true);
+                        buttonGameOver.setVisibility(View.VISIBLE);
+                        buttonPause.setClickable(false);
+                        buttonDown.setClickable(false);
+                        buttonLeft.setClickable(false);
+                        buttonRight.setClickable(false);
+                        buttonRotate.setClickable(false);
+
                     }
                  }
         );
@@ -236,7 +260,7 @@ public class GameActivity extends Activity implements View.OnTouchListener, View
     @Override
     public boolean onSingleTapUp(MotionEvent event) {
         game.moveFigure(game.getFCurrent(), 0, 0, 1);
-        Log.d(Const.LOG_TAG, "single! ");
+      //  Log.d(Const.LOG_TAG, "single! ");
         return true;
     }
 

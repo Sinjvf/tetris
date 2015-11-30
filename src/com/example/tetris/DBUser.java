@@ -39,7 +39,7 @@ public class DBUser {
 
                     Cursor cursor = db.query(Const.TABLE_NAME,
                             null, null, null,
-                            groupBy, having, null) ;
+                            null, null, Const.SCORE_COLUMN+" DESC") ;
                     if (cursor!=null) {
                         if (cursor.moveToFirst()) {
                             db.delete(Const.TABLE_NAME, "id="+cursor.getColumnIndex(Const.SCORE_COLUMN),null );
@@ -86,6 +86,7 @@ public class DBUser {
             }
             cursor.close();
         }
+        Log.d(Const.LOG_TAG, "min= "+minScore+" now= "+score);
         db.close();
         if (score> minScore) {
             return true;

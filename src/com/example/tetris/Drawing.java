@@ -1,9 +1,6 @@
 package com.example.tetris;
 
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Point;
+import android.graphics.*;
 import android.util.Log;
 
 import java.util.HashSet;
@@ -36,7 +33,8 @@ public class Drawing {
     /**
      * draw figure on canvas with p
      */
-    public void drawFigure(Paint p, MyFigures fig) {
+    public void drawFigure( MyFigures fig) {
+        Paint p = new Paint();
         p.setColor(Color.RED);
         p.setStyle(Paint.Style.FILL);
         HashSet<Point> hashSet = fig.getFieldsWithPosition();
@@ -46,7 +44,8 @@ public class Drawing {
         }
     }
 
-    public void drawNextFigure(Paint p, MyFigures fig){
+    public void drawNextFigure( MyFigures fig){
+        Paint p = new Paint();
         p.setColor(Color.RED);
         p.setStyle(Paint.Style.FILL);
         HashSet<Point> hashSet = fig.getFieldsWithPosition();
@@ -68,7 +67,7 @@ public class Drawing {
     private void drawRectForNextFugure(Paint p, int i, int j) {
         Integer iiw;
         iiw = iW/2;
-        canvas.drawRect((i-1) * iiw + Const.TRACE+ iW*Const.NW,
+        canvas.drawRect((i-1) * iiw + Const.TRACE+ iW*Const.NW+1,
                         (j+1) * iiw + Const.TRACE +iW*(Const.NH/2-3/2),
                         (i ) * iiw - Const.TRACE+ iW*Const.NW,
                         (j + 2) * iiw - Const.TRACE+iW*(Const.NH/2-3/2),
@@ -77,7 +76,8 @@ public class Drawing {
     /**
      * draw fulling rectangles
      */
-    public void drawFullScreen(Paint p) {
+    public void drawFullScreen() {
+        Paint p = new Paint();
         p.setColor(Color.RED);
         p.setStyle(Paint.Style.FILL);
         for (int i = 0; i < Const.NW; i++) {
@@ -87,8 +87,8 @@ public class Drawing {
             }
         }
     }
-    public void drawGrid(Integer score, int level, Paint p) {
-
+    public void drawGrid(Integer score, int level) {
+        Paint p = new Paint();
 
         /** fill field by color*/
         canvas.drawARGB(255, 102, 204, 255);
@@ -115,8 +115,37 @@ public class Drawing {
         canvas.drawText(""+level, (width+iW*Const.NW)/2, height/2+iW, p);
         canvas.drawText("score:", (width + iW * Const.NW) / 2, height/2 + iW*3, p);
         canvas.drawText(""+score, (width+iW*Const.NW)/2, height/2+iW*4, p);
-
-
-
     }
+public void drawGameOver(){
+    Paint p1 = new Paint();
+    Paint p = new Paint();
+    Rect mTextBoundRect = new Rect();
+    String text1 = "Game Over!";
+    String text2 = "Press \"exit\" key to escape";
+    float realWidth1, realWidth2, realHeight1, realHeight2;
+    p1.setARGB(255, 52, 104, 255);
+    p1.setStyle(Paint.Style.FILL);
+    canvas.drawRect(iW+shiftx, shifty+6*iW, width - (shiftx+iW), height -(shifty+6*iW), p1 ) ;
+
+    p.setColor(Color.BLACK);
+    p.setTextSize(80);
+    realWidth1 = p.measureText(text1);
+    p.getTextBounds(text1, 0, text1.length(), mTextBoundRect);
+    realHeight1 = mTextBoundRect.height();
+    canvas.drawText(text1,
+            width/2 - (realWidth1 / 2f),
+            height/2 + (realHeight1 /2f-2*iW),
+            p
+    );
+
+    p.setTextSize(30);
+    realWidth2 = p.measureText(text2);
+    p.getTextBounds(text2, 0, text2.length(), mTextBoundRect);
+    realHeight2 = mTextBoundRect.height();
+    canvas.drawText(text2,
+            width/2 - (realWidth2 / 2f),
+            height/2 + (realHeight2 /2f+iW),
+            p
+    );
+}
 }

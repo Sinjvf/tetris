@@ -34,6 +34,7 @@ public class GameScreen {
     public boolean isFull(Point point){
         return screenArray.get(point.y).get(point.x);
     }
+
     /**Proof of ability of move or rotation*/
     public boolean canMoveOrRotate(MyFigures fig, int shift_i, int shift_j, int shift_mode){
         HashSet<Point> field = fig.getFieldsWithPosition(shift_mode);
@@ -60,15 +61,18 @@ public class GameScreen {
                 removingLines++;
             }
         }
-        return (int)Math.pow(2, removingLines-1);
+        return (int)Math.pow(3, removingLines-1);
     }
 
     /**return 1 if figure must stay in this position
      * return 2 if game over*/
-    public int mustStay(MyFigures fig){
+    public int mustStay(MyFigures fig, int shiftX, int shiftY){
         HashSet<Point> field = fig.getFieldsWithPosition();
         for (Point k : field) {
-            if (k.y<0)return 2;
+            if (k.y<0 ) {
+                if (shiftX == 0 && shiftY == 0) return 1;
+                else return 2;
+            }
             if (k.y+1>=n_j)return 1;
             if (isFull(k.x,k.y+1 )) return 1;
         }

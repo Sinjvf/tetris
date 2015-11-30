@@ -53,13 +53,13 @@ public class MainActivity extends Activity implements View.OnClickListener {
                                     str = str.concat(cn + " = "
                                             + c.getString(c.getColumnIndex(cn)) + "; ");
                                 }
-                                Log.d(Const.LOG_TAG, str);
+                          //      Log.d(Const.LOG_TAG, str);
 
                             } while (c.moveToNext());
                         }
                         c.close();
                     } else
-                        Log.d(Const.LOG_TAG, "Cursor is null");
+                      //  Log.d(Const.LOG_TAG, "Cursor is null");
                     break;
         }
             dbHelper.close();

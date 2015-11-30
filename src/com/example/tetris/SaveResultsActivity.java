@@ -36,7 +36,7 @@ public class SaveResultsActivity extends Activity implements View.OnClickListene
 
         Intent intent = getIntent();
         score = intent.getIntExtra("score", 0);
-        Log.d(Const.LOG_TAG, "score = "+score);
+      //  Log.d(Const.LOG_TAG, "score = "+score);
         textScore.setText(score.toString());
     }
 

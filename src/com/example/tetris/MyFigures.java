@@ -63,7 +63,6 @@ public class MyFigures {
     public void rotate(int shift_mode)
     {
         currentMode =(shift_mode+currentMode)%4;
-        Log.d("MY_MASK",currentMode+"" );
     }
 
     /**

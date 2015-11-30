@@ -11,7 +11,7 @@ public class Const {
     public static final int SHIFTX = 2;  //x shift of grid
     public static final int TRACE = 1; //width of line in grid
     public static final String LOG_TAG = "myLogs";
-    public static final int[] PACE = {800, 700, 450, 300, 200, 100, 80};
+    public static final int[] PACE = {80, 700, 450, 300, 200, 100, 80};
     public static final int[] POINT_FOR_LINE ={1, 2, 4, 6, 10, 15, 20};
     public static final int[] LEAVE_LEVEL ={30, 30, 20, 20, 15, 10 };
 //  public static final int[] LEAVE_LEVEL ={1, 1, 1, 1, 1, 1, 1 };
