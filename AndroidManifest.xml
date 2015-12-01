@@ -3,19 +3,24 @@
           package="com.example.tetris"
           android:versionCode="1"
           android:versionName="1.0">
-    <uses-sdk android:minSdkVersion="11"/>
+    <uses-sdk android:minSdkVersion="14"/>
     <application android:label="Tetris" android:icon="@drawable/tetris">
-        <activity android:name="MainActivity">
+        <activity
+                android:name="MainActivity"
+                android:theme="@android:style/Theme.Black">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+
         </activity>
         <activity android:name="GameActivity"
-            android:theme="@android:style/Theme.Black.NoTitleBar">
+            android:theme="@android:style/Theme.Black">
         </activity>
-        <activity android:name="PrintResultsActivity"/>
-        <activity android:name="SaveResultsActivity"/>
+        <activity android:name="PrintResultsActivity"
+                  android:theme="@android:style/Theme.Black"/>
+        <activity android:name="SaveResultsActivity"
+                  android:theme="@android:style/Theme.Black"/>
     </application>
 
 </manifest>

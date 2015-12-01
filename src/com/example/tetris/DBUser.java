@@ -78,7 +78,7 @@ public class DBUser {
             return true;}
         Cursor cursor = db.query(Const.TABLE_NAME,
                 null, null, null,
-                groupBy, having, null) ;
+                null, null, Const.SCORE_COLUMN) ;
 
         if (cursor!=null) {
             if (cursor.moveToFirst()) {

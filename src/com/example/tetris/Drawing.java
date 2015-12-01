@@ -11,15 +11,19 @@ import java.util.HashSet;
 public class Drawing {
     int iW=0;
     int height, width;
-    int shiftx=0,  shifty=0;
+    int shiftx=0,  shifty=0;  //grid shifts
+    int hShift =0; //text shift
     Canvas canvas;
     GameScreen screen;
+
+
     public void setHW( int height, int width){
         this.height = height;
         this.width = width;
+        hShift = height/2-iW*3/2;
         iW = (width*3/4)/Const.NW; //height / Const.NH;
         this.shiftx = Const.SHIFTX;
-        this.shifty = (height-iW*Const.NH)/2;
+        this.shifty = (height-Const.NH*iW)/2;
     }
 
     public void setCanvas(Canvas canvas) {
@@ -68,9 +72,9 @@ public class Drawing {
         Integer iiw;
         iiw = iW/2;
         canvas.drawRect((i-1) * iiw + Const.TRACE+ iW*Const.NW+1,
-                        (j+1) * iiw + Const.TRACE +iW*(Const.NH/2-3/2),
+                        (j+1) * iiw + Const.TRACE +hShift+iW,
                         (i ) * iiw - Const.TRACE+ iW*Const.NW,
-                        (j + 2) * iiw - Const.TRACE+iW*(Const.NH/2-3/2),
+                        (j + 2) * iiw - Const.TRACE+hShift+iW,
                         p);
     }
     /**
@@ -107,15 +111,23 @@ public class Drawing {
                             shifty+ i * iW,
                             p);
 
+        drawMyText(score, level);
+
+    }
+    private void drawMyText(Integer score, int level){
+        Paint p=new Paint();
         p.setColor(Color.BLACK);
         p.setTextAlign(Paint.Align.CENTER);
         p.setTextSize(30);
-        canvas.drawText("Next:", (width + iW * Const.NW) / 2, height / 2 - 3*iW, p);
-        canvas.drawText("Level:", (width + iW * Const.NW) / 2, height / 2, p);
-        canvas.drawText(""+level, (width+iW*Const.NW)/2, height/2+iW, p);
-        canvas.drawText("score:", (width + iW * Const.NW) / 2, height/2 + iW*3, p);
-        canvas.drawText(""+score, (width+iW*Const.NW)/2, height/2+iW*4, p);
+        canvas.drawText("Next:", (width + iW * Const.NW) / 2, hShift-0.5f, p);
+        canvas.drawText("Level:", (width + iW * Const.NW) / 2, hShift+iW*3, p);
+        canvas.drawText(""+level, (width+iW*Const.NW)/2, hShift+iW*4, p);
+        canvas.drawText("score:", (width + iW * Const.NW) / 2, hShift + iW*6, p);
+        canvas.drawText(""+score, (width+iW*Const.NW)/2, hShift+iW*7, p);
     }
+
+
+    //my small crutch. Not used
 public void drawGameOver(){
     Paint p1 = new Paint();
     Paint p = new Paint();

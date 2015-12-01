@@ -6,12 +6,9 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.*;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
+import android.widget.*;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.GestureDetector;
-import android.widget.TextView;
 import android.os.Handler;
 
 /**
@@ -22,8 +19,8 @@ public class GameActivity extends Activity implements View.OnTouchListener, View
     Game game;
     final Activity act =this;
    // SurfaceView gameView;
-    ImageButton buttonRight, buttonLeft, buttonRotate, buttonDown;
-    Button buttonPause, buttonGameOver, buttonExit;
+    ImageButton buttonPause, buttonRight, buttonLeft, buttonRotate, buttonDown;
+    Button  buttonGameOver, buttonExit;
     //Thread gameThread;
     Float currentX, currentY;
     Float previosX, previosY;
@@ -63,7 +60,7 @@ public class GameActivity extends Activity implements View.OnTouchListener, View
         buttonLeft = (ImageButton)findViewById(R.id.button_left);
         buttonRotate = (ImageButton)findViewById(R.id.button_rotate);
         buttonDown = (ImageButton)findViewById(R.id.button_down);
-        buttonPause = (Button)findViewById(R.id.button_pause);
+        buttonPause = (ImageButton)findViewById(R.id.button_pause);
         buttonGameOver = (Button)findViewById(R.id.button_game_over);
         buttonExit = (Button)findViewById(R.id.button_exit);
         buttonRight.setOnClickListener(this);
@@ -76,6 +73,11 @@ public class GameActivity extends Activity implements View.OnTouchListener, View
         buttonGameOver.setVisibility(View.INVISIBLE);
         buttonExit.setOnClickListener(this);
         mDetector = new GestureDetector(this,this);
+
+
+
+       // test.setClickable(false);
+      //  test.setVisibility(View.INVISIBLE);
 
 
         db= new DBUser(this);
@@ -112,6 +114,46 @@ public class GameActivity extends Activity implements View.OnTouchListener, View
         super.onStop();
      //   Log.d(Const.LOG_TAG, "STOP");
     }
+
+    private void checkResuts(){
+        int score =game.getScore();
+        game.stop();
+        Log.d(Const.LOG_TAG, "Game Over! "+score);
+        if (db.isPrintedResult(score)){
+            Log.d(Const.LOG_TAG, "is Printed res");
+            Intent intent = new Intent(this, SaveResultsActivity.class);
+            intent.putExtra("score", score);
+            startActivity(intent);
+        }
+
+        //  finish();
+    }
+
+    @Override
+    public void onListenToMain(){
+        Log.d(Const.LOG_TAG, "Show game over");
+        //     checkResuts();
+        //  finish();
+
+        surface.getHandler().post(
+                new Runnable() {
+                    public void run() {
+
+                        buttonGameOver.setClickable(true);
+                        buttonGameOver.setVisibility(View.VISIBLE);
+                        buttonPause.setClickable(false);
+                        buttonDown.setClickable(false);
+                        buttonLeft.setClickable(false);
+                        buttonRight.setClickable(false);
+                        buttonRotate.setClickable(false);
+
+
+
+                    }
+                }
+        );
+    }
+
 
     @Override
     public void onClick(View v) {
@@ -193,43 +235,6 @@ public class GameActivity extends Activity implements View.OnTouchListener, View
         mDetector.onTouchEvent(event);
         return true;
         }
-
-    private void checkResuts(){
-        int score =game.getScore();
-        game.stop();
-        Log.d(Const.LOG_TAG, "Game Over! "+score);
-        if (db.isPrintedResult(score)){
-            Log.d(Const.LOG_TAG, "is Printed res");
-            Intent intent = new Intent(this, SaveResultsActivity.class);
-            intent.putExtra("score", score);
-            startActivity(intent);
-        }
-
-      //  finish();
-    }
-
-    @Override
-    public void onListenToMain(){
-        Log.d(Const.LOG_TAG, "Show game over");
-   //     checkResuts();
-      //  finish();
-
-        surface.getHandler().post(
-                new Runnable() {
-                    public void run() {
-
-                        buttonGameOver.setClickable(true);
-                        buttonGameOver.setVisibility(View.VISIBLE);
-                        buttonPause.setClickable(false);
-                        buttonDown.setClickable(false);
-                        buttonLeft.setClickable(false);
-                        buttonRight.setClickable(false);
-                        buttonRotate.setClickable(false);
-
-                    }
-                 }
-        );
-    }
 
     @Override
     public boolean onDown(MotionEvent event) {
