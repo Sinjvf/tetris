@@ -1,4 +1,4 @@
-package com.example.tetris;
+package com.example.tetris.standart;
 
 import android.graphics.Point;
 
@@ -7,7 +7,7 @@ import java.util.HashSet;
 /**
  * Created by Sinjvf on 07.03.2015.
  */
-public class F_Z extends MyFigures {
+public class F_Z extends MyFiguresStandart {
     F_Z(){
         super();
         name = "F_Z";

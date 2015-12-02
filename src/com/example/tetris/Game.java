@@ -2,14 +2,12 @@ package com.example.tetris;
 
 import android.content.Context;
 import android.graphics.*;
-import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import com.example.tetris.standart.DrawingStandart;
+import com.example.tetris.standart.MyFiguresStandart;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Random;
 
 
 /**
@@ -21,6 +19,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     int width, height;
     MyFigures fCurrent;
     MyFigures fNext;
+    Drawing draw;
     GameScreen screen;
     Paint p;
     Canvas canvas;
@@ -36,9 +35,9 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     /**
      * constructor
      */
-    public Game(Context context) {
+    public Game(Context context, int type) {
         super(context);
-        newGame();
+        newGame(type);
     }
 
     void setListenerToMain(ListenerToMain listenerToMain){
@@ -47,12 +46,11 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     public Integer getScore() {
         return score;
     }
-    public void newGame(){
-        screen = new GameScreen(Const.NW, Const.NH);
+
+    public void newGame(int type){
+        screen = new GameScreen(Const.S_NW, Const.S_NH);
         p = new Paint();
-        fCurrent = MyFigures.newFigure();
-        fNext = MyFigures.newFigure();
-        score = 0;
+        score = 1;
         level =0;
         gameOver = false;
         checkingLevel = new ArrayList<Integer>();
@@ -61,6 +59,16 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
             checkingLevel.add(checkingLevel.get(i)+Const.POINT_FOR_LINE[i]*Const.LEAVE_LEVEL[i] );
         }
         getHolder().addCallback(this);
+        switch (type){
+            case Const.STANDART:
+
+                fCurrent = MyFiguresStandart.newFigure();
+                fNext = MyFiguresStandart.newFigure();
+                draw = new DrawingStandart();
+                break;
+            case Const.TRIANGLE:
+                break;
+        }
     }
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width,
@@ -105,7 +113,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     }
     public boolean moveFigure(MyFigures fig, int shift_i, int shift_j, int shift_mode) {
         if (screen.canMoveOrRotate(fig, shift_i, shift_j, shift_mode)) {
-            fig.setCurrentMode((fig.currentMode+shift_mode)%4);
+            fig.setCurrentMode((fig.getCurrentMode()+shift_mode)%4);
             fig.move(shift_i, shift_j);
             return true;
         } else {
@@ -133,9 +141,11 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     private synchronized void setPace(int level){
         pace = Const.PACE[level];
     }
+
     private synchronized void checkAndSetLevel(){
         while ((level <7) && (score>=checkingLevel.get(level+1))){
             level++;
+            setPace(level);
         }
 
 
@@ -143,18 +153,17 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
 
     class DrawThread extends Thread {
-        //Timing
         private long prevTime;
         long now;
         long elapsedTime;
         private volatile boolean running = false;
         private SurfaceHolder surfaceHolder;
-        Drawing draw;
+
 
         public DrawThread(SurfaceHolder surfaceHolder) {
             this.surfaceHolder = surfaceHolder;
             prevTime = System.currentTimeMillis();
-            draw = new Drawing();
+
         }
 
         public void setRunning(boolean running) {
@@ -179,7 +188,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
                         } else
                             if (!gameOver) {
                                 fCurrent = fNext;
-                                fNext = MyFigures.newFigure();
+                                fNext = MyFiguresStandart.newFigure();
                             }
                         try {
                             canvas = surfaceHolder.lockCanvas(null);

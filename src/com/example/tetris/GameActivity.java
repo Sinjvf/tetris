@@ -45,7 +45,7 @@ public class GameActivity extends Activity implements View.OnTouchListener, View
 
     public void onCreate(Bundle savedInstanceState) {
      //   Log.d(Const.LOG_TAG, "create " + this.toString());
-        game = new Game(this);
+        game = new Game(this, Const.STANDART);
         game.setListenerToMain(this);
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);

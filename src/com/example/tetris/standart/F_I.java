@@ -1,15 +1,13 @@
-package com.example.tetris;
+package com.example.tetris.standart;
 
-import android.graphics.Matrix;
 import android.graphics.Point;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 
 /**
  * Created by Sinjvf on 03.03.2015.
  */
-public class F_I extends MyFigures{
+public class F_I extends MyFiguresStandart {
     F_I(){
         super();
         name = "F_I";

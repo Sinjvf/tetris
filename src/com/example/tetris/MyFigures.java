@@ -1,9 +1,8 @@
 package com.example.tetris;
 
 import android.graphics.Point;
-import android.util.Log;
+import com.example.tetris.standart.*;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
@@ -12,21 +11,23 @@ import java.util.Random;
 /**
  * Created by Sinjvf on 03.03.2015.
  */
-public class MyFigures {
+public abstract class MyFigures {
+
+    protected String name;
+    protected HashMap<Integer, HashSet<Point>>modeHashMap ;
+    protected int currentMode;
+    protected int x, y;
 
 
-    String name;
-    HashMap<Integer, HashSet<Point>>modeHashMap ;
-    int currentMode;
-    int x, y;
-
-
-    MyFigures(){
+    public MyFigures(){
         modeHashMap = new HashMap<Integer,  HashSet<Point > >();
         currentMode=1;
         name = "";
         x=4; y=0;
 
+    }
+    public int getCurrentMode(){
+        return currentMode;
     }
     public String getName() {
         return name;
@@ -60,44 +61,6 @@ public class MyFigures {
     public void move(int i, int j){
         x+=i; y+=j;
     }
-    public void rotate(int shift_mode)
-    {
-        currentMode =(shift_mode+currentMode)%4;
-    }
 
-    /**
-     * create new figure
-     */
-
-    public static MyFigures newFigure(){
-        MyFigures fCurrent;
-        Random random;
-        random = new Random(System.currentTimeMillis());
-        int num = Math.abs(random.nextInt()) % 7;
-        switch (num) {
-            case 1:
-                fCurrent = new F_L();
-                break;
-            case 2:
-                fCurrent = new F_O();
-                break;
-            case 3:
-                fCurrent = new F_P();
-                break;
-            case 4:
-                fCurrent = new F_T();
-                break;
-            case 5:
-                fCurrent = new F_Z();
-                break;
-            case 6:
-                fCurrent = new F_Z_back();
-                break;
-            default:
-                fCurrent = new F_I();
-                break;
-        }
-        fCurrent.setCurrentMode(Math.abs(random.nextInt()) % 4);
-        return fCurrent;
-    }
+    public static MyFigures newFigure(){return null;}
 }

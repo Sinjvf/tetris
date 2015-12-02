@@ -32,7 +32,7 @@ public class DBUser {
         Cursor cursor2 = db.rawQuery(queryCount, null);
         if (cursor2!=null) {
             if (cursor2.moveToFirst()) {
-                if(cursor2.getInt(0)<10){
+                if(cursor2.getInt(0)<Const.N_BEST){
                     db.insert(Const.TABLE_NAME, null, cv);
                 }
                 else {
@@ -42,8 +42,8 @@ public class DBUser {
                             null, null, Const.SCORE_COLUMN+" DESC") ;
                     if (cursor!=null) {
                         if (cursor.moveToFirst()) {
-                            db.delete(Const.TABLE_NAME, "id="+cursor.getColumnIndex(Const.SCORE_COLUMN),null );
-                            db.insert(Const.TABLE_NAME, null, cv);
+                            db.update(Const.TABLE_NAME, cv, "id="+cursor.getInt(cursor.getColumnIndex("id")),null );
+Log.d(Const.LOG_TAG, "try to update" +"id="+cursor.getInt(cursor.getColumnIndex("id")));
                         }
                         cursor.close();
                     }
@@ -73,7 +73,7 @@ public class DBUser {
             }
             cursor2.close();
         }
-        if (rowCount<10) {
+        if (rowCount<Const.N_BEST) {
             db.close();
             return true;}
         Cursor cursor = db.query(Const.TABLE_NAME,

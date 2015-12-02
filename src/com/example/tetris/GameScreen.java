@@ -1,10 +1,10 @@
 package com.example.tetris;
 
 import android.graphics.Point;
+import com.example.tetris.standart.MyFiguresStandart;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Vector;
 
 /**
  * Created by Sinjvf on 03.03.2015.
@@ -13,7 +13,9 @@ public class GameScreen {
     private int n_i, n_j;
     private ArrayList <ArrayList<Boolean> > screenArray;
     private ArrayList <Boolean> line;
-    GameScreen(int i_size, int j_size){
+
+
+    public GameScreen(int i_size, int j_size){
         line = new ArrayList<Boolean>();
         screenArray = new ArrayList<ArrayList<Boolean>>();
         n_i = i_size;
