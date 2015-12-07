@@ -13,47 +13,35 @@ import java.util.HashSet;
  */
 public class DrawingStandart extends Drawing{
 
-    /**
-     * draw figure on canvas with p
-     */
+
     @Override
-    public void drawFigure( MyFigures fig) {
-        Paint p = new Paint();
-        p.setColor(Color.RED);
-        p.setStyle(Paint.Style.FILL);
-        HashSet<Point> hashSet = fig.getFieldsWithPosition();
-        for (Point k : hashSet) {
-            if (k.y>=0)
-                drawRect(p, k.x, k.y);
-        }
-    }
-@Override
-    public void drawNextFigure( MyFigures fig){
-        Paint p = new Paint();
-        p.setColor(Color.RED);
-        p.setStyle(Paint.Style.FILL);
-        HashSet<Point> hashSet = fig.getFieldsWithPosition();
-        for (Point k : hashSet) {
-            drawRectForNextFugure(p, k.x, k.y);
-        }
+    public void setHW( int height, int width){
+        this.height = height;
+        this.width = width;
+        hShift = height/2-iW*3/2;
+        iW = (width*3/4)/ Const.NW[Const.STANDART]; //height / Const.NH[Const.STANDART];
+        this.shiftx = Const.SHIFTX;
+        this.shifty = (height-Const.NH[Const.STANDART]*iW)/2;
     }
 
     /**
      * draw rectangle on canvas with p in (i, j) point
      */
-    private void drawRect(Paint p, int i, int j) {
+    @Override
+    protected void drawField(Paint p, int i, int j) {
         canvas.drawRect(shiftx+i * iW + Const.TRACE,
                         shifty+j * iW + Const.TRACE,
                         shiftx+(i + 1) * iW - Const.TRACE,
                         shifty+(j + 1) * iW - Const.TRACE,
                         p);
     }
-    private void drawRectForNextFugure(Paint p, int i, int j) {
+    @Override
+    protected  void drawFieldForNextFugure(Paint p, int i, int j) {
         Integer iiw;
         iiw = iW/2;
-        canvas.drawRect((i-1) * iiw + Const.TRACE+ iW*Const.S_NW +1,
+        canvas.drawRect((i-1) * iiw + Const.TRACE+ iW*Const.NW[Const.STANDART] +1,
                         (j+1) * iiw + Const.TRACE +hShift+iW,
-                        (i ) * iiw - Const.TRACE+ iW*Const.S_NW,
+                        (i ) * iiw - Const.TRACE+ iW*Const.NW[Const.STANDART],
                         (j + 2) * iiw - Const.TRACE+hShift+iW,
                         p);
     }
@@ -65,10 +53,10 @@ public class DrawingStandart extends Drawing{
         Paint p = new Paint();
         p.setColor(Color.RED);
         p.setStyle(Paint.Style.FILL);
-        for (int i = 0; i < Const.S_NW; i++) {
-            for (int j = 0; j < Const.S_NH; j++) {
+        for (int i = 0; i < Const.NW[Const.STANDART]; i++) {
+            for (int j = 0; j < Const.NH[Const.STANDART]; j++) {
                 if (screen.isFull(i, j))
-                    drawRect(p, i, j);
+                    drawField(p, i, j);
             }
         }
     }
@@ -80,20 +68,20 @@ public class DrawingStandart extends Drawing{
         canvas.drawARGB(255, 102, 204, 255);
         p.setStrokeWidth(Const.TRACE*2);
         p.setColor(Color.BLACK);
-        for (int i = 0; i <=Const.S_NW; i++)
+        for (int i = 0; i <=Const.NW[Const.STANDART]; i++)
             canvas.drawLine(shiftx+i * iW,
                             shifty+0,
                             shiftx+i * iW,
-                            shifty+iW*Const.S_NH,
+                            shifty+iW*Const.NH[Const.STANDART],
                             p);
-        for (int i = 0; i <= Const.S_NH; i++)
+        for (int i = 0; i <= Const.NH[Const.STANDART]; i++)
             canvas.drawLine(shiftx+0,
                             shifty+i * iW,
-                            shiftx+iW * Const.S_NW,
+                            shiftx+iW * Const.NW[Const.STANDART],
                             shifty+ i * iW,
                             p);
 
-        drawMyText(score, level);
+        drawMyText(score, level, (width + iW * Const.NW[Const.STANDART]) / 2, hShift);
 
     }
 

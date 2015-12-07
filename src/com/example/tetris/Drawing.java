@@ -17,42 +17,53 @@ public abstract class Drawing {
     protected GameScreen screen;
 
 
-    public void setHW( int height, int width){
-        this.height = height;
-        this.width = width;
-        hShift = height/2-iW*3/2;
-        iW = (width*3/4)/ Const.S_NW; //height / Const.S_NH;
-        this.shiftx = Const.SHIFTX;
-        this.shifty = (height-Const.S_NH*iW)/2;
-    }
-
     public void setCanvas(Canvas canvas) {
         this.canvas = canvas;
     }
-
     public void setScreen(GameScreen screen) {
         this.screen = screen;
     }
 
-    /**
-     * draw figure on canvas with p
-     */
-    public abstract void drawFigure( MyFigures fig);
-    public abstract void drawNextFigure( MyFigures fig);
+
+    public abstract void setHW( int height, int width);
+
+
+    public void drawFigure( MyFigures fig) {
+        Paint p = new Paint();
+        p.setColor(Color.RED);
+        p.setStyle(Paint.Style.FILL);
+        HashSet<Point> hashSet = fig.getFieldsWithPosition();
+        for (Point k : hashSet) {
+            if (k.y>=0)
+                drawField(p, k.x, k.y);
+        }
+    }
+    public void drawNextFigure( MyFigures fig){
+        Paint p = new Paint();
+        p.setColor(Color.RED);
+        p.setStyle(Paint.Style.FILL);
+        HashSet<Point> hashSet = fig.getFieldsWithPosition();
+        for (Point k : hashSet) {
+            drawFieldForNextFugure(p, k.x, k.y);
+        }
+    }
     public abstract void drawFullScreen() ;
     public abstract void drawGrid(Integer score, int level);
+    protected abstract  void drawField(Paint p, int i, int j);
+    protected abstract void drawFieldForNextFugure(Paint p, int i, int j);
 
 
-    protected void drawMyText(Integer score, int level){
+
+    protected void drawMyText(Integer score, int level,  int wShift, int hShift){
         Paint p=new Paint();
         p.setColor(Color.BLACK);
         p.setTextAlign(Paint.Align.CENTER);
         p.setTextSize(30);
-        canvas.drawText("Next:", (width + iW * Const.S_NW) / 2, hShift-0.5f, p);
-        canvas.drawText("Level:", (width + iW * Const.S_NW) / 2, hShift+iW*3, p);
-        canvas.drawText(""+level, (width+iW*Const.S_NW)/2, hShift+iW*4, p);
-        canvas.drawText("score:", (width + iW * Const.S_NW) / 2, hShift + iW*6, p);
-        canvas.drawText(""+score, (width+iW*Const.S_NW)/2, hShift+iW*7, p);
+        canvas.drawText("Next:", wShift, hShift-0.5f, p);
+        canvas.drawText("Level:", wShift, hShift+iW*3, p);
+        canvas.drawText(""+level, wShift, hShift+iW*4, p);
+        canvas.drawText("score:", wShift, hShift + iW*5, p);
+        canvas.drawText(""+score, wShift, hShift+iW*6, p);
     }
 
 }

@@ -16,36 +16,38 @@ import android.os.Handler;
  */
 public class GameActivity extends Activity implements View.OnTouchListener, View.OnClickListener, ListenerToMain, GestureDetector.OnGestureListener{
 
-    Game game;
-    final Activity act =this;
-   // SurfaceView gameView;
-    ImageButton buttonPause, buttonRight, buttonLeft, buttonRotate, buttonDown;
-    Button  buttonGameOver, buttonExit;
-    //Thread gameThread;
-    Float currentX, currentY;
-    Float previosX, previosY;
-    Float motionX, motionY;
+    private Game game;
+    private final Activity act =this;
+
+    private ImageButton buttonPause, buttonRight, buttonLeft, buttonRotate, buttonDown;
+    private Button  buttonGameOver, buttonExit;
+
+    private Float currentX, currentY;
+    private Float previosX, previosY;
+    private Float motionX, motionY;
     private final static int RIGHT_MOTION = 1;
     private final static int LEFT_MOTION  = -1;
-    private final static int UP_MOTION    = 2;
     private final static int DOWN_MOTION  = -2;
-    private final static int ROTATE_MOTION = 3;
-    private final static int NOTHING = 0;
-    int widht;
-    int height;
-    int typeOfMotion = 0;
-    GestureDetector mDetector;
-    LinearLayout surface;
-    DBUser db;
-    TextView textView;
-    Handler handler;
+    private final static int NOTHING  = 0;
+    private int widht;
+    private int height;
+    private int typeOfMotion = 0;
+    private GestureDetector mDetector;
+    private LinearLayout surface;
+    private DBUser db;
+    private int type;
+    //private TextView textView;
+    //private Handler handler;
+
 
 
 
 
     public void onCreate(Bundle savedInstanceState) {
      //   Log.d(Const.LOG_TAG, "create " + this.toString());
-        game = new Game(this, Const.STANDART);
+        Intent intent = getIntent();
+        type = intent.getIntExtra("type", 0);
+        game = new Game(this, type);
         game.setListenerToMain(this);
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -53,7 +55,7 @@ public class GameActivity extends Activity implements View.OnTouchListener, View
         surface = (LinearLayout)findViewById(R.id.linearLayout1);
         surface.addView(game);
         surface.setOnTouchListener(this);
-        handler = surface.getHandler();
+       // handler = surface.getHandler();
 
 
         buttonRight = (ImageButton)findViewById(R.id.button_right);
@@ -81,7 +83,7 @@ public class GameActivity extends Activity implements View.OnTouchListener, View
 
 
         db= new DBUser(this);
-        textView = new TextView(this);
+       // textView = new TextView(this);
     }
 
     @Override
@@ -202,28 +204,32 @@ public class GameActivity extends Activity implements View.OnTouchListener, View
             case MotionEvent.ACTION_MOVE: // движение
                 motionX = currentX - previosX;
                 motionY = currentY - previosY;
-                if (motionY > height/5){
+                if (motionY > height/Const.sensibility){
                     typeOfMotion = DOWN_MOTION;
                     previosY = currentY;}
-                else if (motionX < -widht/5) {
+                else if (motionX < -widht/Const.sensibility) {
                     typeOfMotion = LEFT_MOTION;
                     previosX=currentX;
                 }
-                else if (motionX > widht/5) {
+                else if (motionX > widht/Const.sensibility) {
                     typeOfMotion = RIGHT_MOTION;
                     previosX=currentX;
                 }
-                else {
-                    typeOfMotion = NOTHING;
-                }
+                else typeOfMotion = NOTHING;
+
+
+                Log.d(Const.LOG_TAG+11, "widht=" + widht+", height="+height);
                 switch (typeOfMotion) {
                     case RIGHT_MOTION:
+                        Log.d(Const.LOG_TAG+11, "right");
                         game.moveFigure(game.getFCurrent(), 1, 0, 0);
                         break;
                     case LEFT_MOTION:
+                        Log.d(Const.LOG_TAG+11, "left");
                         game.moveFigure(game.getFCurrent(), -1, 0, 0);
                         break;
                     case DOWN_MOTION:
+                        Log.d(Const.LOG_TAG+11, "down");
                         game.moveFigure(game.getFCurrent(), 0, 1, 0);
                         break;
                 }

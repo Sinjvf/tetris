@@ -9,7 +9,6 @@ import java.util.HashSet;
  */public class F_Z_back extends MyFiguresStandart {
     F_Z_back(){
         super();
-        name = "F_Z_back";
         HashSet<Point> hs=new HashSet<Point>();
         hs.add(new Point(2, -1)); hs.add(new Point(1, -1));hs.add(new Point(1, 0));hs.add(new Point(0, 0));
         modeHashMap.put(0, hs);

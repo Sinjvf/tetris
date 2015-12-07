@@ -10,18 +10,22 @@ import android.view.View;
 import android.widget.Button;
 
 public class MainActivity extends Activity implements View.OnClickListener {
-    Button button_new, button_rating, button_exit_app;
+    private Button button_new_standart, button_new_awry, button_rating, button_exit_app;
     private DBHelper dbHelper;
+    private Intent intent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //setContentView(new Game(this));
         setContentView(R.layout.main);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        button_new = (Button)findViewById(R.id.button_new);
+        button_new_standart = (Button)findViewById(R.id.button_new_standart);
+
+        button_new_awry = (Button)findViewById(R.id.button_new_awry);
         button_rating = (Button)findViewById(R.id.button_rating);
         button_exit_app = (Button)findViewById(R.id.button_exit_app);
-        button_new.setOnClickListener(this);
+        button_new_standart.setOnClickListener(this);
+        button_new_awry.setOnClickListener(this);
         button_rating.setOnClickListener(this);
         button_exit_app.setOnClickListener(this);
         dbHelper = new DBHelper(this);
@@ -30,10 +34,15 @@ public class MainActivity extends Activity implements View.OnClickListener {
         public void onClick(View v) {
 
             SQLiteDatabase db = dbHelper.getWritableDatabase();
-            // Меняем текст в TextView (tvOut)
             switch (v.getId()) {
-                case R.id.button_new:
-                    Intent intent = new Intent(this, GameActivity.class);
+                case R.id.button_new_standart:
+                    intent = new Intent(this, GameActivity.class);
+                    intent.putExtra("type", Const.STANDART);
+                    startActivity(intent);
+                    break;
+                case R.id.button_new_awry:
+                    intent = new Intent(this, GameActivity.class);
+                    intent.putExtra("type", Const.AWRY);
                     startActivity(intent);
                     break;
                 case R.id.button_exit_app:
@@ -53,13 +62,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
                                     str = str.concat(cn + " = "
                                             + c.getString(c.getColumnIndex(cn)) + "; ");
                                 }
-                          //      Log.d(Const.LOG_TAG, str);
 
                             } while (c.moveToNext());
                         }
                         c.close();
-                    } else
-                      //  Log.d(Const.LOG_TAG, "Cursor is null");
+                    }
                     break;
         }
             dbHelper.close();

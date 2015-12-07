@@ -4,8 +4,12 @@ import android.content.Context;
 import android.graphics.*;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import com.example.tetris.awry.GameScreenAwry;
+import com.example.tetris.awry.MyFiguresAwry;
 import com.example.tetris.standart.DrawingStandart;
+import com.example.tetris.standart.GameScreenStandart;
 import com.example.tetris.standart.MyFiguresStandart;
+import com.example.tetris.awry.DrawingAwry;
 
 import java.util.ArrayList;
 
@@ -16,20 +20,22 @@ import java.util.ArrayList;
 /** main game view*/
 public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
-    int width, height;
-    MyFigures fCurrent;
-    MyFigures fNext;
-    Drawing draw;
-    GameScreen screen;
-    Paint p;
-    Canvas canvas;
-    boolean gameOver;
-    Integer score, level;
-    volatile boolean notPause = true;
-    ListenerToMain listenerToMain;
+    private int width, height;
+    private MyFigures fCurrent;
+    private MyFigures fNext;
+    private Drawing draw;
+    private GameScreen screen;
+
+    private Paint p;
+    private Canvas canvas;
+    private boolean gameOver;
+    private Integer score, level;
+    private volatile boolean notPause = true;
+    private ListenerToMain listenerToMain;
     private DrawThread drawThread;
-    int pace;
-    ArrayList<Integer> checkingLevel;
+    private int pace;
+    private int type;
+    private ArrayList<Integer> checkingLevel;
    // boolean isFirstFlag; //This flag is setted  only when application start
 
     /**
@@ -48,9 +54,9 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void newGame(int type){
-        screen = new GameScreen(Const.S_NW, Const.S_NH);
+        this.type = type;
         p = new Paint();
-        score = 1;
+        score = 0;
         level =0;
         gameOver = false;
         checkingLevel = new ArrayList<Integer>();
@@ -61,12 +67,16 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         getHolder().addCallback(this);
         switch (type){
             case Const.STANDART:
-
+                screen = new GameScreenStandart(Const.NW[type], Const.NH[type]);
                 fCurrent = MyFiguresStandart.newFigure();
                 fNext = MyFiguresStandart.newFigure();
                 draw = new DrawingStandart();
                 break;
-            case Const.TRIANGLE:
+            case Const.AWRY:
+                screen = new GameScreenAwry(Const.NW[type],  Const.NH[type]*2-1);
+                fCurrent = MyFiguresAwry.newFigure();
+                fNext = MyFiguresAwry.newFigure();
+                draw = new DrawingAwry();
                 break;
         }
     }
@@ -86,15 +96,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-      //  boolean retry = true;
         stop();
-        //drawThread.interrupt();
-/*        while (retry) {
-            try {
-                drawThread.join();
-                retry = false;
-            } catch (InterruptedException e) {}
-        }*/
     }
 
     public  synchronized void stop() {
@@ -111,29 +113,26 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     {
         return notPause;
     }
-    public boolean moveFigure(MyFigures fig, int shift_i, int shift_j, int shift_mode) {
-        if (screen.canMoveOrRotate(fig, shift_i, shift_j, shift_mode)) {
+    public  synchronized  boolean moveFigure(MyFigures fig, int shiftX, int shiftY, int shift_mode) {
+        int stay;
+        if ((stay = screen.canMoveOrRotate(fig, shiftX, shiftY, shift_mode))==-1) {
             fig.setCurrentMode((fig.getCurrentMode()+shift_mode)%4);
-            fig.move(shift_i, shift_j);
+            fig.move(shiftX,  shiftY);
             return true;
-        } else {
-            int stay;
-            if ((stay = screen.mustStay(fig, shift_i, shift_j)) > 0) {
-                if (stay == 2){
+        } else if (stay == 2){
                     gameOver = true;
                     screen.fillFigureSpace(fig);
                     if (listenerToMain != null)
                         listenerToMain.onListenToMain();
                 }
-                else {
+                else if (stay==1){
                     screen.fillFigureSpace(fig);
                     score+=screen.deleteLineIfNesessary()*Const.POINT_FOR_LINE[level];
                     checkAndSetLevel();
                 }
-            }
             return false;
-        }
     }
+
     public MyFigures getFCurrent() {
         return fCurrent;
     }
@@ -188,7 +187,14 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
                         } else
                             if (!gameOver) {
                                 fCurrent = fNext;
-                                fNext = MyFiguresStandart.newFigure();
+                                switch (type){
+                                    case Const.STANDART:
+                                        fNext = MyFiguresStandart.newFigure();
+                                        break;
+                                    case Const.AWRY:
+                                        fNext = MyFiguresAwry.newFigure();
+                                        break;
+                                }
                             }
                         try {
                             canvas = surfaceHolder.lockCanvas(null);

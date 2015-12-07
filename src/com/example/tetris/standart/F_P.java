@@ -11,7 +11,6 @@ public class F_P extends MyFiguresStandart {
 
     F_P() {
         super();
-        name = "F_P";
         HashSet<Point> hs=new HashSet<Point>();
         hs.add(new Point(1, -2)); hs.add(new Point(1, -1));hs.add(new Point(1, 0));hs.add(new Point(0, 0));
         modeHashMap.put(0, hs);
@@ -30,8 +29,5 @@ public class F_P extends MyFiguresStandart {
         modeHashMap.put(2, new int[][] {{1, 0, 0, 0}, {0, 0, 1, 2}});
         modeHashMap.put(3, new int[][] {{-1, 0, 1, 1}, {0, 0, 0, 1}});*/
     }
-    @Override
-    public void rotate(int ang){
 
-    }
 }

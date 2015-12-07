@@ -16,27 +16,36 @@
                         android:layout_weight="1"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
-                <Button
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="New Game"
-                    android:id="@+id/button_new"/>
-                <Button
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Results"
-                    android:id="@+id/button_rating"/>
-                 <Button
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Finish"
-                    android:id="@+id/button_exit_app"/>
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="New Standart Game"
+                        android:id="@+id/button_new_standart">
+                    </Button>
+                    <Button
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="New Awry Game"
+                            android:id="@+id/button_new_awry">
+                    </Button>
+
+
                 </LinearLayout>
                 <LinearLayout
                         android:orientation="vertical"
                         android:layout_weight="1"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
+                    <Button
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Results"
+                            android:id="@+id/button_rating"/>
+                    <Button
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Finish"
+                            android:id="@+id/button_exit_app"/>
                 </LinearLayout>
 
             </LinearLayout>

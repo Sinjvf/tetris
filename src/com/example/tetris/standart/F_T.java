@@ -10,7 +10,6 @@ import java.util.HashSet;
 public class F_T extends MyFiguresStandart {
     F_T(){
         super();
-        name = "F_T";
         HashSet<Point> hs=new HashSet<Point>();
         hs.add(new Point(0, -1)); hs.add(new Point(1, -1));hs.add(new Point(2, -1));hs.add(new Point(1, 0));
         modeHashMap.put(0, hs);
@@ -28,9 +27,5 @@ public class F_T extends MyFiguresStandart {
         modeHashMap.put(1, new int[][] {{1, 1, 1, 0}, {0, 1, 2, 1}});
         modeHashMap.put(2, new int[][] {{ 0, 1, 2, 1}, {1, 1, 1, 0}});
         modeHashMap.put(3, new int[][] {{0, 0, 0, 1}, {0, 1, 2, 1}});*/
-    }
-    @Override
-    public void rotate(int ang){
-
     }
 }
