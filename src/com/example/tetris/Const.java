@@ -14,7 +14,7 @@ public class Const {
     public static final String LOG_TAG = "myLogs";
     public static final int[] PACE = {800, 700, 450, 300, 200, 100, 80};
     public static final int[] POINT_FOR_LINE ={1, 2, 4, 6, 10, 15, 20};
-    public static final int[] LEAVE_LEVEL ={30, 30, 20, 20, 15, 10 };
+    public static final int[] LEAVE_LEVEL ={20, 20, 10, 10, 8, 5 };
     public static final int sensibility =7; //screen's sensibility  for moving.
 
     //Data Base

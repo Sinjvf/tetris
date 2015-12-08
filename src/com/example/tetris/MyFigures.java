@@ -42,7 +42,7 @@ public abstract class MyFigures {
     /**get fields with position*/
     public HashSet<Point> getFieldsWithPosition() {
         HashSet<Point> field_old, field_new;
-        field_old = modeHashMap.get(currentMode%4);
+        field_old = getHashMap().get(currentMode%4);
         field_new = new HashSet<Point>();
         for (Point k: field_old) {
             field_new.add(new Point(k.x + x, k.y + y));

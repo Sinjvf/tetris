@@ -1,6 +1,7 @@
 package com.example.tetris.awry;
 
 import android.graphics.Point;
+import android.util.Log;
 import com.example.tetris.Const;
 import com.example.tetris.MyFigures;
 
@@ -14,56 +15,75 @@ import java.util.Random;
  * Created by Sinjvf on 03.03.2015.
  */
 public class MyFiguresAwry extends MyFigures{
-    protected HashMap<Integer, HashSet<Point>>modeOddHashMap;
+  //  protected HashMap<Integer, HashSet<Point>>modeOddHashMap;
 
 
     MyFiguresAwry(){
         super();
         x=3;
+        y=-3;
         movingStep=2;
+    //    modeOddHashMap = new HashMap<Integer,  HashSet<Point > >();
     }
 
 
     protected void setOddHashMap(){
-        HashSet<Point> hs;
-
+        HashSet<Point> hs1, hs;//=new HashSet<Point>();
         for (int k=0;k<4;k++){
-            hs=modeHashMap.get(k);
-            for (Point hsK: hs){
+            hs1=new HashSet<Point>();
+            hs = modeHashMap.get(k);
+            for (Point hsK: hs)
+            {
                 if (hsK.y%2==0){
-                    hsK.x+=1;
-                    hsK.y+=1;
+                    hs1.add(new Point(hsK.x, hsK.y));
                 }
                 else{
-                    hsK.y=+1;
+                    hs1.add(new Point(hsK.x-1, hsK.y));
                 }
             }
-            modeOddHashMap.put(k, hs);
+            modeHashMap.put(k+4, hs1);
         }
     }
     @Override
     protected  HashMap<Integer, HashSet<Point>> getHashMap(){
-      //  if (x%2==0)
+        if (y%2==0){
+
+            Log.d(Const.LOG_TAG+11, "-----------------normal------- x="+x+", y="+y);
             return modeHashMap;
-      //  else
-     //       return modeOddHashMap;
+        }
+        else{
+
+            Log.d(Const.LOG_TAG+11, "-----------------odd---------- x="+x+", y="+y);
+            HashSet<Point> hs;
+            HashMap<Integer,  HashSet<Point > > modeOddHashMap = new HashMap<Integer,  HashSet<Point > >();
+            for (int k=0;k<4;k++){
+                hs=modeHashMap.get(k+4);
+                modeOddHashMap.put(k, hs);
+            }
+            return modeOddHashMap;
+    }
     }
 
     public void move(int i, int j){
+
+        Log.d(Const.LOG_TAG, "moving! x="+x+", y="+y);
         if (i % 2 == 0)
             x += i/2;
         else
             if (y%2==0){
-                x+=(i+1)/2;
-                y+=1;
+                x=x+(i+1)/2;
+                y=y+1;
             }
             else{
-                x+=(i-1)/2;
-                y=+1;
+                x=x+(i-1)/2;
+                y=y+1;
             }
 
+//        x+=i;
 
         y+=j* movingStep;
+        Log.d(Const.LOG_TAG, "moved! x="+x+", y="+y);
+
     }
 
     public MyFiguresAwry clone(){
@@ -78,7 +98,7 @@ public class MyFiguresAwry extends MyFigures{
         Random random;
         random = new Random(System.currentTimeMillis());
         int num = Math.abs(random.nextInt()) % 8;
-   /*     switch (num) {
+        switch (num) {
             case 1:
                 fCurrent = new F_L();
                 break;
@@ -103,8 +123,8 @@ public class MyFiguresAwry extends MyFigures{
             default:
                 fCurrent = new F_I_extended();
                 break;
-        }*/
-        fCurrent=new F_I();
+        }
+        fCurrent=new F_I_extended();
         fCurrent.setCurrentMode(Math.abs(random.nextInt()) % 4);
         return fCurrent;
     }

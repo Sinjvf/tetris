@@ -60,8 +60,11 @@ public class DrawingAwry extends Drawing{
         int absI, absJ;
         path.reset();
         p.setStyle(Paint.Style.FILL);
-        absJ = hShift+iW/2+iiw*j;
-        absI = iW*(Const.NW[Const.AWRY] +1)+iiw*i;
+        absJ = hShift+iW*2+iiw*j/2;
+        absI = iW*(Const.NW[Const.AWRY] )+
+                ((j%2==0) ?
+                        (int)(shiftx+(i+1)*iiw)
+                        :(int)(shiftx+(i+0.5f)*iiw));;
         path.moveTo(absI, absJ+Const.TRACE);
         path.lineTo(absI-iiw/2+Const.TRACE, absJ+iiw/2);
         path.lineTo(absI, absJ+iiw-(Const.TRACE+1));

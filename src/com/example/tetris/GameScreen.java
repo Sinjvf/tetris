@@ -12,19 +12,19 @@ import java.util.HashSet;
 public abstract class GameScreen {
     protected int nI, nJ;
     protected ArrayList <ArrayList<Boolean> > screenArray;
-    protected ArrayList <Boolean> line;
+    protected ArrayList <Boolean> blankLine;
 
 
     public GameScreen(int iSize, int jSize){
-        line = new ArrayList<Boolean>();
+        blankLine = new ArrayList<Boolean>();
         screenArray = new ArrayList<ArrayList<Boolean>>();
         nI = iSize;
         nJ = jSize;
         for (int i =0; i< nI;i++){
-            line.add(false);
+            blankLine.add(false);
         }
         for (int i =0; i< nJ;i++){
-            screenArray.add((ArrayList<Boolean>)line.clone());
+            screenArray.add((ArrayList<Boolean>) blankLine.clone());
         }
     }
 
@@ -56,7 +56,7 @@ public abstract class GameScreen {
             //other fig prevents
             if (isFull(k.x,k.y)){
                 //other fig prevents rotation
-                if (shiftX == 0 && shiftY == 0) {
+                if (shiftY == 0 ) {
 
                     Log.d(Const.LOG_TAG,"pr rot");
                     return 0;
@@ -69,7 +69,6 @@ public abstract class GameScreen {
                 }
                 //fig lay on the other fig
                 else {
-
                     Log.d(Const.LOG_TAG,"lay");
                     return 1;
                 }
@@ -89,15 +88,20 @@ public abstract class GameScreen {
                 break;}
             }
             if (fullLine){
-                screenArray.remove(j);
-                screenArray.add(0, (ArrayList<Boolean>)line.clone());
+
+                Log.d(Const.LOG_TAG,"REMOVING LINE ="+j);
+                removeLine(j);
                 removingLines++;
             }
         }
         return (int)Math.pow(3, removingLines-1);
     }
 
+    protected abstract void removeLine(int j);
+
     public void fillFigureSpace(MyFigures fig){
+
+        Log.d("myLogs", "FILL SPACE");
         HashSet<Point> field = fig.getFieldsWithPosition();
         ArrayList<Boolean> tmpLine;
         for (Point k:field){

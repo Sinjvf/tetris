@@ -1,6 +1,7 @@
 package com.example.tetris;
 
 import android.graphics.*;
+import android.util.Log;
 import com.example.tetris.standart.MyFiguresStandart;
 
 import java.util.HashSet;
@@ -32,6 +33,7 @@ public abstract class Drawing {
         Paint p = new Paint();
         p.setColor(Color.RED);
         p.setStyle(Paint.Style.FILL);
+        Log.d("myLogs", "DRAW FIG");
         HashSet<Point> hashSet = fig.getFieldsWithPosition();
         for (Point k : hashSet) {
             if (k.y>=0)
@@ -42,6 +44,7 @@ public abstract class Drawing {
         Paint p = new Paint();
         p.setColor(Color.RED);
         p.setStyle(Paint.Style.FILL);
+        Log.d("myLogs", "DRAW NEXT FIG");
         HashSet<Point> hashSet = fig.getFieldsWithPosition();
         for (Point k : hashSet) {
             drawFieldForNextFugure(p, k.x, k.y);

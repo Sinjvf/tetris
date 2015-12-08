@@ -2,6 +2,7 @@ package com.example.tetris;
 
 import android.content.Context;
 import android.graphics.*;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import com.example.tetris.awry.GameScreenAwry;
@@ -115,8 +116,11 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     }
     public  synchronized  boolean moveFigure(MyFigures fig, int shiftX, int shiftY, int shift_mode) {
         int stay;
+
+          Log.d("myLogs", " CHECK MOVE");
         if ((stay = screen.canMoveOrRotate(fig, shiftX, shiftY, shift_mode))==-1) {
             fig.setCurrentMode((fig.getCurrentMode()+shift_mode)%4);
+            Log.d("myLogs", " MOVE");
             fig.move(shiftX,  shiftY);
             return true;
         } else if (stay == 2){
