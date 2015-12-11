@@ -18,17 +18,24 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-     //   Log.d(Const.LOG_TAG, "--- onCreate database ---");
+        Log.d(Const.LOG_TAG+22, "--- onCreate database ---");
         // создаем таблицу с полями
-        db.execSQL("create table "+ Const.TABLE_NAME +"("
+        for (int i=0;i<Const.TABLE_NAME.length;i++){
+        db.execSQL("create table "+ Const.TABLE_NAME[i] +"("
                 + "id integer primary key autoincrement, "
                 + Const.NAME_COLUMN+" text, "
                 + Const.SCORE_COLUMN+" integer" + ");");
+        }
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+        for (int i=0;i<Const.TABLE_NAME.length;i++) {
+            db.execSQL("create table if not exists " + Const.TABLE_NAME[i] +"("
+                    + "id integer primary key autoincrement, "
+                    + Const.NAME_COLUMN+" text, "
+                    + Const.SCORE_COLUMN+" integer" + ");");;
+        }
     }
 
 

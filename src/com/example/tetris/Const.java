@@ -9,6 +9,7 @@ public class Const {
 //Global settings
     public static final int STANDART = 0;
     public static final int AWRY = 1;
+    public static final int HEX = 2;
     public static final int SHIFTX = 2;  //x shift of grid
     public static final int TRACE = 1; //width of line in grid
     public static final String LOG_TAG = "myLogs";
@@ -19,14 +20,14 @@ public class Const {
 
     //Data Base
     public static final String DATABASE_NAME = "mydatabase.db";
-    public static final String TABLE_NAME = "scores";
+    public static final String[] TABLE_NAME = {"standart", "awry", "hex"};
     public static final String NAME_COLUMN = "name";
     public static final String SCORE_COLUMN = "score";
     public static final int N_BEST = 10;
 
 
-
-    public static final int[] NW={10, 7};
-    public static final int[] NH={20, 14};
+    //numbers of rows/columns in screens: stndart, awry, hex
+    public static final int[] NW={10, 7, 5};
+    public static final int[] NH={20, 14, 10};
 
 }

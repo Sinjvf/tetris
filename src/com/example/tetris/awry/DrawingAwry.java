@@ -23,9 +23,9 @@ public class DrawingAwry extends Drawing{
         this.width = width;
         iW = (width*3/4)/ (Const.NW[Const.AWRY]); //height
         iW= (iW%2==0)?iW:iW-1;
-        hShift = height/2-iW*3/2;
-        this.shiftx = Const.SHIFTX;
-        this.shifty = (height-Const.NH[Const.AWRY]*iW)/2;
+        hShift = height/2-iW;
+        shiftx = Const.SHIFTX;
+        shifty = (height-Const.NH[Const.AWRY]*iW)/2;
     }
 
 

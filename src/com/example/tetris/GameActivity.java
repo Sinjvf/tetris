@@ -82,7 +82,7 @@ public class GameActivity extends Activity implements View.OnTouchListener, View
       //  test.setVisibility(View.INVISIBLE);
 
 
-        db= new DBUser(this);
+        db= new DBUser(this, type);
        // textView = new TextView(this);
     }
 
@@ -121,13 +121,15 @@ public class GameActivity extends Activity implements View.OnTouchListener, View
         int score =game.getScore();
         game.stop();
         Log.d(Const.LOG_TAG, "Game Over! "+score);
-        if (db.isPrintedResult(score)){
-            Log.d(Const.LOG_TAG, "is Printed res");
-            Intent intent = new Intent(this, SaveResultsActivity.class);
-            intent.putExtra("score", score);
-            startActivity(intent);
+        if (score>0) {
+            if (db.isPrintedResult(score)) {
+                Log.d(Const.LOG_TAG, "is Printed res");
+                Intent intent = new Intent(this, SaveResultsActivity.class);
+                intent.putExtra("score", score);
+                intent.putExtra("type", type);
+                startActivity(intent);
+            }
         }
-
         //  finish();
     }
 
@@ -174,7 +176,16 @@ public class GameActivity extends Activity implements View.OnTouchListener, View
                 game.moveFigure(game.getFCurrent(), 0, 1, 0);
                 break;
             case R.id.button_pause:
-                game.setNotPause(!game.getNotPause());
+                boolean pause = !game.getNotPause();
+                buttonRotate.setClickable(pause);
+                buttonRight.setClickable(pause);
+                buttonLeft.setClickable(pause);
+                buttonDown.setClickable(pause);
+                buttonRotate.setActivated(pause);
+                buttonRight.setActivated(pause);
+                buttonLeft.setActivated(pause);
+                buttonDown.setActivated(pause);
+                game.setNotPause(pause);
                 break;
             case R.id.button_exit:
                 checkResuts();
@@ -196,47 +207,49 @@ public class GameActivity extends Activity implements View.OnTouchListener, View
         height = game.getHeight();
         currentX = event.getX();
         currentY = event.getY();
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN: // нажатие
-                previosX = currentX;
-                previosY = currentY;
-                break;
-            case MotionEvent.ACTION_MOVE: // движение
-                motionX = currentX - previosX;
-                motionY = currentY - previosY;
-                if (motionY > height/Const.sensibility){
-                    typeOfMotion = DOWN_MOTION;
-                    previosY = currentY;}
-                else if (motionX < -widht/Const.sensibility) {
-                    typeOfMotion = LEFT_MOTION;
-                    previosX=currentX;
-                }
-                else if (motionX > widht/Const.sensibility) {
-                    typeOfMotion = RIGHT_MOTION;
-                    previosX=currentX;
-                }
-                else typeOfMotion = NOTHING;
+
+        boolean notPause = game.getNotPause();
+        if (notPause) {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN: // нажатие
+                    previosX = currentX;
+                    previosY = currentY;
+                    break;
+                case MotionEvent.ACTION_MOVE: // движение
+                    motionX = currentX - previosX;
+                    motionY = currentY - previosY;
+                    if (motionY > height / Const.sensibility) {
+                        typeOfMotion = DOWN_MOTION;
+                        previosY = currentY;
+                    } else if (motionX < -widht / Const.sensibility) {
+                        typeOfMotion = LEFT_MOTION;
+                        previosX = currentX;
+                    } else if (motionX > widht / Const.sensibility) {
+                        typeOfMotion = RIGHT_MOTION;
+                        previosX = currentX;
+                    } else typeOfMotion = NOTHING;
 
 
-                Log.d(Const.LOG_TAG+11, "widht=" + widht+", height="+height);
-                switch (typeOfMotion) {
-                    case RIGHT_MOTION:
-                        Log.d(Const.LOG_TAG+11, "right");
-                        game.moveFigure(game.getFCurrent(), 1, 0, 0);
-                        break;
-                    case LEFT_MOTION:
-                        Log.d(Const.LOG_TAG+11, "left");
-                        game.moveFigure(game.getFCurrent(), -1, 0, 0);
-                        break;
-                    case DOWN_MOTION:
-                        Log.d(Const.LOG_TAG+11, "down");
-                        game.moveFigure(game.getFCurrent(), 0, 1, 0);
-                        break;
-                }
-                break;
-            case MotionEvent.ACTION_UP: // отпускание
+                    Log.d(Const.LOG_TAG + 11, "widht=" + widht + ", height=" + height);
+                    switch (typeOfMotion) {
+                        case RIGHT_MOTION:
+                            Log.d(Const.LOG_TAG + 11, "right");
+                            game.moveFigure(game.getFCurrent(), 1, 0, 0);
+                            break;
+                        case LEFT_MOTION:
+                            Log.d(Const.LOG_TAG + 11, "left");
+                            game.moveFigure(game.getFCurrent(), -1, 0, 0);
+                            break;
+                        case DOWN_MOTION:
+                            Log.d(Const.LOG_TAG + 11, "down");
+                            game.moveFigure(game.getFCurrent(), 0, 1, 0);
+                            break;
+                    }
+                    break;
+                case MotionEvent.ACTION_UP: // отпускание
 
-                break;
+                    break;
+            }
         }
         mDetector.onTouchEvent(event);
         return true;
@@ -255,7 +268,18 @@ public class GameActivity extends Activity implements View.OnTouchListener, View
 
     @Override
     public void onLongPress(MotionEvent event) {
-        game.setNotPause(!game.getNotPause());
+
+        boolean pause = !game.getNotPause();
+        buttonRotate.setClickable(pause);
+        buttonRight.setClickable(pause);
+        buttonLeft.setClickable(pause);
+        buttonDown.setClickable(pause);
+
+        buttonRotate.setActivated(pause);
+        buttonRight.setActivated(pause);
+        buttonLeft.setActivated(pause);
+        buttonDown.setActivated(pause);
+        game.setNotPause(pause);
     }
 
     @Override

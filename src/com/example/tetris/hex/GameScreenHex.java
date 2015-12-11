@@ -1,32 +1,29 @@
-package com.example.tetris.awry;
+package com.example.tetris.hex;
 
-import android.graphics.Point;
 import android.util.Log;
 import com.example.tetris.Const;
 import com.example.tetris.GameScreen;
-import com.example.tetris.MyFigures;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 
 /**
  * Created by Sinjvf on 03.03.2015.
  */
-public class GameScreenAwry extends GameScreen{
+public class GameScreenHex extends GameScreen{
 
 
-
-    public GameScreenAwry(int i_size, int j_size){
+    public GameScreenHex(int i_size, int j_size){
         super(i_size, j_size);
     }
 
+    //TODO
 @Override
     public boolean isFull(int i, int j){
         if (j<0)return false;
         else if (j%2==0 && i== nI-1) return true;
         return screenArray.get(j).get(i);
     }
-
+    //TODO
     @Override
     protected  void removeLine(int j){
         ArrayList <Boolean> TmpLine;

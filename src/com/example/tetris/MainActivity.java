@@ -10,7 +10,9 @@ import android.view.View;
 import android.widget.Button;
 
 public class MainActivity extends Activity implements View.OnClickListener {
-    private Button button_new_standart, button_new_awry, button_rating, button_exit_app;
+    private Button button_new_standart, button_new_awry, button_new_hex,
+            button_rating_standart, button_rating_awry, button_rating_hex,
+            button_exit_app;
     private DBHelper dbHelper;
     private Intent intent;
     @Override
@@ -20,15 +22,22 @@ public class MainActivity extends Activity implements View.OnClickListener {
         setContentView(R.layout.main);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         button_new_standart = (Button)findViewById(R.id.button_new_standart);
-
         button_new_awry = (Button)findViewById(R.id.button_new_awry);
-        button_rating = (Button)findViewById(R.id.button_rating);
+        button_new_hex = (Button)findViewById(R.id.button_new_hex);
+
+        button_rating_standart = (Button)findViewById(R.id.button_rating_standart);
+        button_rating_awry = (Button)findViewById(R.id.button_rating_awry);
+        button_rating_hex = (Button)findViewById(R.id.button_rating_hex);
+
         button_exit_app = (Button)findViewById(R.id.button_exit_app);
+
         button_new_standart.setOnClickListener(this);
         button_new_awry.setOnClickListener(this);
-        button_rating.setOnClickListener(this);
+        button_new_hex.setOnClickListener(this);
+
         button_exit_app.setOnClickListener(this);
         dbHelper = new DBHelper(this);
+
     }
         @Override
         public void onClick(View v) {
@@ -45,28 +54,28 @@ public class MainActivity extends Activity implements View.OnClickListener {
                     intent.putExtra("type", Const.AWRY);
                     startActivity(intent);
                     break;
+                case R.id.button_new_hex:
+                    intent = new Intent(this, GameActivity.class);
+                    intent.putExtra("type", Const.HEX);
+                    startActivity(intent);
+                    break;
                 case R.id.button_exit_app:
                     this.finish();
                     break;
-                case R.id.button_rating:
-                    Intent intentr = new Intent(this, PrintResultsActivity.class);
-                    startActivity(intentr);
-                    Cursor c = null;
-                    c = db.query("scores", null, null, null, null, null, "score");
-                    if (c != null) {
-                        if (c.moveToFirst()) {
-                            String str;
-                            do {
-                                str = "";
-                                for (String cn : c.getColumnNames()) {
-                                    str = str.concat(cn + " = "
-                                            + c.getString(c.getColumnIndex(cn)) + "; ");
-                                }
-
-                            } while (c.moveToNext());
-                        }
-                        c.close();
-                    }
+                case R.id.button_rating_standart:
+                    intent = new Intent(this, PrintResultsActivity.class);
+                    intent.putExtra("type", Const.STANDART);
+                    startActivity(intent);
+                    break;
+                case R.id.button_rating_awry:
+                    intent = new Intent(this, PrintResultsActivity.class);
+                    intent.putExtra("type", Const.AWRY);
+                    startActivity(intent);
+                    break;
+                case R.id.button_rating_hex:
+                    intent = new Intent(this, PrintResultsActivity.class);
+                    intent.putExtra("type", Const.HEX);
+                    startActivity(intent);
                     break;
         }
             dbHelper.close();

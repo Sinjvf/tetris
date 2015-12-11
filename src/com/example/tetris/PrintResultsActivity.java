@@ -9,18 +9,19 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.Button;
-import android.widget.TableLayout;
-import android.widget.TableRow;
-import android.widget.TextView;
+import android.widget.*;
+
+import java.util.ArrayList;
 
 /**
  * Created by sinjvf on 20.11.15.
  */
 public class PrintResultsActivity extends Activity implements View.OnClickListener {
-    Button button_exit, button_erase;
-    private DBHelper dbHelper;
-    TableLayout resTable;
+    private Button button_exit, button_erase;
+  //  private DBHelper dbHelper;
+    private TableLayout resTable;
+    private int type;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,7 +33,11 @@ public class PrintResultsActivity extends Activity implements View.OnClickListen
         resTable = (TableLayout)findViewById(R.id.res_table);
         button_exit.setOnClickListener(this);
         button_erase.setOnClickListener(this);
-        dbHelper = new DBHelper(this);
+      //  dbHelper = new DBHelper(this);
+        Intent intent= getIntent();
+        type = intent.getIntExtra("type", 0);
+
+
         printResults();
         //resTable.addView(new TableRow(this), );
     }
@@ -44,9 +49,10 @@ public class PrintResultsActivity extends Activity implements View.OnClickListen
                 this.finish();
                 break;
             case R.id.button_erase:
-                DBUser dbUser = new DBUser(this);
+                DBUser dbUser = new DBUser(this, type);
                 dbUser.deleteRes();
                 Intent intentr = new Intent(this, PrintResultsActivity.class);
+                intentr.putExtra("type", type);
                 startActivity(intentr);
                 finish();
                 break;
@@ -54,52 +60,39 @@ public class PrintResultsActivity extends Activity implements View.OnClickListen
     }
 
     public void printResults(){
-        DBHelper dbHelper;
-        dbHelper = new DBHelper(this);
-        SQLiteDatabase db;
-        db = dbHelper.getWritableDatabase();
-        Cursor cursor = db.query(Const.TABLE_NAME,
-                null, null, null,
-                null, null, Const.SCORE_COLUMN+" DESC") ;
+        DBUser dbUser = new DBUser(this, type);
+        ArrayList<ArrayList<String>> res = dbUser.allResults();
+        for (Integer i=1;i<=res.size(); i++){
+            TableRow record = new TableRow(this);
+            record.setGravity(Gravity.CENTER_HORIZONTAL);
+            TextView place = new TextView(this);
+            TextView tname = new TextView(this);
+            TextView tscore = new TextView(this);
+            place.setLayoutParams(new LinearLayout.LayoutParams
+                                        (LinearLayout.LayoutParams.WRAP_CONTENT,
+                                                LinearLayout.LayoutParams.WRAP_CONTENT, 0.2f));
+            tname.setLayoutParams(new LinearLayout.LayoutParams
+                    (LinearLayout.LayoutParams.WRAP_CONTENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT, 0.5f));
+            tscore.setLayoutParams(new LinearLayout.LayoutParams
+                    (LinearLayout.LayoutParams.WRAP_CONTENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT, 0.3f));
 
-        if (cursor!=null) {
-            if (cursor.moveToFirst()) {
-                int nameColIndex = cursor.getColumnIndex("name");
-                int scoreColIndex = cursor.getColumnIndex("score");
-                Integer i=0;
-                do {
-                    i++;
-                  //  Log.d(Const.LOG_TAG, "READ_DB");
-                    TableRow record = new TableRow(this);
-                    record.setGravity(Gravity.CENTER_HORIZONTAL);
-                    TextView place = new TextView(this);
-                    TextView tname = new TextView(this);
-                    TextView tscore = new TextView(this);
-                    place.setTextSize(25);
-                    tname.setTextSize(25);
-                    tscore.setTextSize(25);
-                    place.setGravity(Gravity.CENTER);
-     //               tname.setGravity(Gravity.RIGHT);
-    //                tscore.setGravity(Gravity.RIGHT);
-                  //  place.getResources().getColor(R.color.bgreen);
-                    tname.setText(cursor.getString(nameColIndex));
-                    tscore.setText(cursor.getString(scoreColIndex));
-                    place.setText(i.toString());
-                    record.addView(place);
-                    record.addView(tname);
-                    record.addView(tscore);
-                    resTable.addView(record);
+            place.setTextSize(25);
+            tname.setTextSize(25);
+            tscore.setTextSize(25);/*
+                    place.setGravity(Gravity.LEFT);
+                    tname.setGravity(Gravity.LEFT);
+                    tscore.setGravity(Gravity.RIGHT);*/
+            tname.setText(res.get(i-1).get(0));
+            tscore.setText(res.get(i-1).get(1));
+            place.setText(i.toString());
+            record.addView(place);
+            record.addView(tname);
+            record.addView(tscore);
+            resTable.addView(record);
 
 
-                } while (cursor.moveToNext());
-            }
-            cursor.close();
         }
-        db.close();
-
-
-
-
-
     }
 }

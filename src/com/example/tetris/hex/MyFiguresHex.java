@@ -1,4 +1,4 @@
-package com.example.tetris.awry;
+package com.example.tetris.hex;
 
 import android.graphics.Point;
 import android.util.Log;
@@ -10,15 +10,14 @@ import java.util.HashSet;
 import java.util.Random;
 
 
-
 /**
  * Created by Sinjvf on 03.03.2015.
  */
-public class MyFiguresAwry extends MyFigures{
+public class MyFiguresHex extends MyFigures{
   //  protected HashMap<Integer, HashSet<Point>>modeOddHashMap;
 
-
-    MyFiguresAwry(){
+    //TODO
+    MyFiguresHex(){
         super();
         x=3;
         y=-3;
@@ -26,7 +25,7 @@ public class MyFiguresAwry extends MyFigures{
     //    modeOddHashMap = new HashMap<Integer,  HashSet<Point > >();
     }
 
-
+    //TODO
     protected void setOddHashMap(){
         HashSet<Point> hs1, hs;//=new HashSet<Point>();
         for (int k=0;k<4;k++){
@@ -44,6 +43,7 @@ public class MyFiguresAwry extends MyFigures{
             modeHashMap.put(k+4, hs1);
         }
     }
+    //TODO
     @Override
     protected  HashMap<Integer, HashSet<Point>> getHashMap(){
         if (y%2==0){
@@ -63,9 +63,8 @@ public class MyFiguresAwry extends MyFigures{
             return modeOddHashMap;
     }
     }
-
+    //TODO
     public void move(int i, int j){
-
         Log.d(Const.LOG_TAG, "moving! x="+x+", y="+y);
         if (i % 2 == 0)
             x += i/2;
@@ -86,15 +85,18 @@ public class MyFiguresAwry extends MyFigures{
 
     }
 
-    public MyFiguresAwry clone(){
-        MyFiguresAwry newFig = new MyFiguresAwry();
+    //TODO
+    public MyFiguresHex clone(){
+        MyFiguresHex newFig = new MyFiguresHex();
         newFig.modeHashMap = (HashMap<Integer, HashSet<Point>>)modeHashMap.clone();
         newFig.setCurrentMode(currentMode);
         newFig.setXY(x, y);
         return newFig;
     }
-    public static MyFiguresAwry newFigure(){
-        MyFiguresAwry fCurrent;
+
+    //TODO
+    public static MyFiguresHex newFigure(){
+        MyFiguresHex fCurrent;
         Random random;
         random = new Random(System.currentTimeMillis());
         int num = Math.abs(random.nextInt()) % 8;
@@ -124,7 +126,7 @@ public class MyFiguresAwry extends MyFigures{
                 fCurrent = new F_I_extended();
                 break;
         }
-        //fCurrent=new F_I_extended();
+        fCurrent=new F_I_extended();
         fCurrent.setCurrentMode(Math.abs(random.nextInt()) % 4);
         return fCurrent;
     }

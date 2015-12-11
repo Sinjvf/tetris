@@ -10,7 +10,7 @@ import java.util.HashSet;
  * Created by sinjvf on 20.11.15.
  */
 public abstract class Drawing {
-    protected int iW=0;
+    protected int iW=0, iH=0;
     protected int height, width;
     protected int shiftx=0,  shifty=0;  //grid shifts
     protected int hShift =0; //text shift

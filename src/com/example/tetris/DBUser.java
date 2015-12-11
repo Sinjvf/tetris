@@ -7,18 +7,25 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /**
  * Created by sinjvf on 23.11.15.
  */
 public class DBUser {
-    DBHelper dbHelper;
-    SQLiteDatabase db;
-    private static String queryCount = "SELECT COUNT(*) FROM "+Const.TABLE_NAME;
+    private DBHelper dbHelper;
+    private SQLiteDatabase db;
+    private static String queryCount;
     private static String having = "MIN("+Const.SCORE_COLUMN+")";
     private static String groupBy = Const.SCORE_COLUMN;
-    DBUser( Context context){
+    private int type;
+    DBUser( Context context, int type){
         dbHelper = new DBHelper(context);
+        this.type=type;
+        queryCount = "SELECT COUNT(*) FROM "+Const.TABLE_NAME[type];
         db = dbHelper.getWritableDatabase();
+
     }
 
 
@@ -33,17 +40,17 @@ public class DBUser {
         if (cursor2!=null) {
             if (cursor2.moveToFirst()) {
                 if(cursor2.getInt(0)<Const.N_BEST){
-                    db.insert(Const.TABLE_NAME, null, cv);
+                    db.insert(Const.TABLE_NAME[type], null, cv);
                 }
                 else {
 
-                    Cursor cursor = db.query(Const.TABLE_NAME,
+                    Cursor cursor = db.query(Const.TABLE_NAME[type],
                             null, null, null,
                             null, null, Const.SCORE_COLUMN+" DESC") ;
                     if (cursor!=null) {
                         if (cursor.moveToFirst()) {
-                            db.update(Const.TABLE_NAME, cv, "id="+cursor.getInt(cursor.getColumnIndex("id")),null );
-Log.d(Const.LOG_TAG, "try to update" +"id="+cursor.getInt(cursor.getColumnIndex("id")));
+                            db.update(Const.TABLE_NAME[type], cv, "id="+cursor.getInt(cursor.getColumnIndex("id")),null );
+//Log.d(Const.LOG_TAG, "try to update" +"id="+cursor.getInt(cursor.getColumnIndex("id")));
                         }
                         cursor.close();
                     }
@@ -57,7 +64,7 @@ Log.d(Const.LOG_TAG, "try to update" +"id="+cursor.getInt(cursor.getColumnIndex(
 
     public void deleteRes(){
         db = dbHelper.getWritableDatabase();
-        db.delete(Const.TABLE_NAME, null,null );
+        db.delete(Const.TABLE_NAME[type], null,null );
         db.close();
     }
     //shows is result one of the best
@@ -76,7 +83,7 @@ Log.d(Const.LOG_TAG, "try to update" +"id="+cursor.getInt(cursor.getColumnIndex(
         if (rowCount<Const.N_BEST) {
             db.close();
             return true;}
-        Cursor cursor = db.query(Const.TABLE_NAME,
+        Cursor cursor = db.query(Const.TABLE_NAME[type],
                 null, null, null,
                 null, null, Const.SCORE_COLUMN) ;
 
@@ -92,5 +99,50 @@ Log.d(Const.LOG_TAG, "try to update" +"id="+cursor.getInt(cursor.getColumnIndex(
             return true;
         }
         return false;
+    }
+
+    public String bestRes(){
+        String name="Sinjvf";
+
+        db = dbHelper.getWritableDatabase();
+        Cursor cursor = db.query(Const.TABLE_NAME[type],
+                null, null, null,
+                null, null, Const.SCORE_COLUMN+" DESC") ;
+
+        if (cursor!=null) {
+            if (cursor.moveToFirst()) {
+                name = cursor.getString(cursor.getColumnIndex(Const.NAME_COLUMN));
+            }
+            cursor.close();
+        }
+        db.close();
+        return name;
+    }
+
+    //returns rows as Sring[]
+    //int row : place,name, score
+    public ArrayList<ArrayList<String>> allResults(){
+        db = dbHelper.getWritableDatabase();
+        ArrayList<ArrayList<String>> table=new ArrayList<ArrayList<String>>();
+        ArrayList<String> row;
+        Cursor cursor = db.query(Const.TABLE_NAME[type],
+                null, null, null,
+                null, null, Const.SCORE_COLUMN+" DESC") ;
+
+        if (cursor!=null) {
+            if (cursor.moveToFirst()) {
+                int nameColIndex = cursor.getColumnIndex("name");
+                int scoreColIndex = cursor.getColumnIndex("score");
+                do {
+                    row=new ArrayList<String>();
+                    row.add(cursor.getString(nameColIndex));
+                    row.add(cursor.getString(scoreColIndex));
+                    table.add(row);
+                } while (cursor.moveToNext());
+            }
+            cursor.close();
+        }
+        db.close();
+        return table;
     }
 }

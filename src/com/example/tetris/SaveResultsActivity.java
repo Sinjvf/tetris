@@ -16,11 +16,13 @@ import android.widget.TextView;
  * Created by sinjvf on 23.11.15.
  */
 public class SaveResultsActivity extends Activity implements View.OnClickListener {
-    Integer score;
-    String name;
-    Button button_ok, button_cancel;
-    EditText textName;
-    TextView textScore;
+    private Integer score;
+    private String name;
+    private Button button_ok, button_cancel;
+    private EditText textName;
+    private TextView textScore;
+    private int type;
+    private DBUser db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +38,11 @@ public class SaveResultsActivity extends Activity implements View.OnClickListene
 
         Intent intent = getIntent();
         score = intent.getIntExtra("score", 0);
+        type = intent.getIntExtra("type", 0);
+        db = new DBUser(this, type);
       //  Log.d(Const.LOG_TAG, "score = "+score);
         textScore.setText(score.toString());
+        textName.setText(db.bestRes());
     }
 
 
@@ -55,8 +60,9 @@ public class SaveResultsActivity extends Activity implements View.OnClickListene
         }
     }
     private void saveRes(){
-        DBUser db = new DBUser(this);
+        DBUser db = new DBUser(this, type);
         name = textName.getText().toString();
+
         db.printResult(name, score);
     }
 }

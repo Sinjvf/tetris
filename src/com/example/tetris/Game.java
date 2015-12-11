@@ -7,6 +7,9 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import com.example.tetris.awry.GameScreenAwry;
 import com.example.tetris.awry.MyFiguresAwry;
+import com.example.tetris.hex.DrawingHex;
+import com.example.tetris.hex.GameScreenHex;
+import com.example.tetris.hex.MyFiguresHex;
 import com.example.tetris.standart.DrawingStandart;
 import com.example.tetris.standart.GameScreenStandart;
 import com.example.tetris.standart.MyFiguresStandart;
@@ -78,6 +81,14 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
                 fCurrent = MyFiguresAwry.newFigure();
                 fNext = MyFiguresAwry.newFigure();
                 draw = new DrawingAwry();
+                break;
+            case Const.HEX:
+                //screen = new GameScreenHex(Const.NW[type],  Const.NH[type]*2-1);
+                fCurrent = MyFiguresHex.newFigure();
+                fNext = MyFiguresHex.newFigure();
+
+                screen = new GameScreenAwry(Const.NW[type],  Const.NH[type]*2-1);
+                draw = new DrawingHex();
                 break;
         }
     }
